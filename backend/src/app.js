@@ -1,29 +1,64 @@
 const express = require("express");
-
-const tareaRoutes = require("./routes/tareaRoutes");
-
-const usuarioRoutes = require("./routes/usuarioRoutes");
-
-const authRoutes = require("./routes/authRoutes");
+const cors = require("cors");
+const helmet = require("helmet");
+const env = require("./config/env");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
+const taskRoutes = require("./routes/tasks");
+const clientRoutes = require("./routes/clients");
+const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
-app.use(express.json());
+// Seguridad
+app.use(helmet());
 
+// CORS
+app.use(
+  cors({
+    origin: env.CORS_ORIGIN.split(","),
+    credentials: true,
+  })
+);
+
+// Middlewares de parseo
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
+// Health check
+app.get("/health", (req, res) => {
+  res.json({
+    success: true,
+    message: "API is running",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// API Info
 app.get("/", (req, res) => {
-    res.json({
-        mensaje: "API Seminario_01 funcionando"
-    });
+  res.json({
+    success: true,
+    message: "TechDesk API v1",
+    version: "1.0.0",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-app.use("/api/tareas", tareaRoutes);
+// Rutas
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/tasks", taskRoutes);
+app.use("/api/v1/clients", clientRoutes);
 
-app.use("/api/usuarios", usuarioRoutes);
-
-app.use("/api/auth", authRoutes);
-
-const PORT = 3000;
-
-app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en puerto ${PORT}`);
+// 404
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
 });
+
+// Error handler
+app.use(errorHandler);
+
+module.exports = app;

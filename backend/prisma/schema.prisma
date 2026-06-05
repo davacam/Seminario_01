@@ -1,0 +1,300 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== MULTI-TENANT ====================
+
+model Company {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String
+  slug              String    @unique
+  logoUrl           String?
+  website           String?
+  maxUsers          Int       @default(50)
+  subscriptionPlan  String    @default("starter")
+
+  users             User[]
+  clients           Client[]
+  tasks             Task[]
+  forms             Form[]
+  reports           Report[]
+  auditLogs         AuditLog[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([slug])
+}
+
+// ==================== USUARIOS ====================
+
+model User {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyId         String    @db.Uuid
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  email             String    @unique
+  passwordHash      String
+  fullName          String
+  phone             String?
+  avatarUrl         String?
+  role              Role      @default(TECHNICIAN)
+  status            UserStatus @default(ACTIVE)
+  lastLogin         DateTime?
+
+  createdTasks      Task[]    @relation("CreatedBy")
+  assignedTasks     Task[]    @relation("AssignedTo")
+  createdForms      Form[]    @relation("CreatedBy")
+  formResponses     FormResponse[]
+  reports           Report[]  @relation("GeneratedBy")
+  evidence          Evidence[]
+  auditLogs         AuditLog[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([companyId, email])
+  @@index([companyId])
+  @@index([email])
+}
+
+// ==================== CLIENTES ====================
+
+model Client {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyId         String    @db.Uuid
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  name              String
+  email             String?
+  phone             String?
+  address           String?
+  city              String?
+  state             String?
+  country           String?
+  zipCode           String?
+  contactPerson     String?
+  industry          String?
+  status            ClientStatus @default(ACTIVE)
+
+  tasks             Task[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([email])
+}
+
+// ==================== TAREAS ====================
+
+model Task {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyId         String    @db.Uuid
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  clientId          String?   @db.Uuid
+  client            Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  createdById       String    @db.Uuid
+  createdBy         User      @relation("CreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  assignedToId      String?   @db.Uuid
+  assignedTo        User?     @relation("AssignedTo", fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  title             String
+  description       String?
+  priority          TaskPriority @default(MEDIUM)
+  status            TaskStatus @default(OPEN)
+  dueDate           DateTime?
+  startedAt         DateTime?
+  completedAt       DateTime?
+
+  location          Json?     // {lat, lng, address}
+  attachments       String[]  @db.Text[]
+
+  formResponses     FormResponse[]
+  reports           Report[]
+  evidence          Evidence[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([status])
+  @@index([assignedToId])
+  @@index([createdAt])
+}
+
+// ==================== FORMULARIOS ====================
+
+model Form {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyId         String    @db.Uuid
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdById       String    @db.Uuid
+  createdBy         User      @relation("CreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  title             String
+  description       String?
+  isTemplate        Boolean   @default(false)
+  status            FormStatus @default(ACTIVE)
+  fields            Json      // Schema de campos dinámicos
+
+  responses         FormResponse[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([isTemplate])
+}
+
+model FormResponse {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  formId            String    @db.Uuid
+  form              Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  taskId            String?   @db.Uuid
+  task              Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  userId            String    @db.Uuid
+  user              User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  data              Json      // Datos completados del formulario
+  status            FormResponseStatus @default(DRAFT)
+  submittedAt       DateTime?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([formId])
+  @@index([taskId])
+}
+
+// ==================== REPORTES ====================
+
+model Report {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyId         String    @db.Uuid
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  taskId            String    @db.Uuid
+  task              Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  generatedById     String    @db.Uuid
+  generatedBy       User      @relation("GeneratedBy", fields: [generatedById], references: [id], onDelete: Restrict)
+
+  title             String
+  content           String?
+  format            String    @default("pdf")
+  fileUrl           String?
+  sharedWith        String[]  @db.Uuid[]
+  isPublic          Boolean   @default(false)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([taskId])
+}
+
+// ==================== EVIDENCIAS ====================
+
+model Evidence {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  taskId            String    @db.Uuid
+  task              Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  uploadedById      String    @db.Uuid
+  uploadedBy        User      @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  fileUrl           String
+  fileType          String?
+  description       String?
+  takenAt           DateTime?
+
+  createdAt         DateTime  @default(now())
+
+  @@index([taskId])
+}
+
+// ==================== AUDITORÍA ====================
+
+model AuditLog {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyId         String    @db.Uuid
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  userId            String?   @db.Uuid
+  user              User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  action            String
+  entityType        String?
+  entityId          String?   @db.Uuid
+  changes           Json?
+  ipAddress         String?
+
+  createdAt         DateTime  @default(now())
+
+  @@index([companyId])
+  @@index([createdAt])
+  @@index([action])
+}
+
+// ==================== ENUMS ====================
+
+enum Role {
+  ADMIN
+  TECHNICIAN
+  CLIENT
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum ClientStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum TaskStatus {
+  OPEN
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum FormStatus {
+  ACTIVE
+  ARCHIVED
+  DELETED
+}
+
+enum FormResponseStatus {
+  DRAFT
+  SUBMITTED
+  REVIEWED
+  REJECTED
+}

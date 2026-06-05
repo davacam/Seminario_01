@@ -1,0 +1,115 @@
+import { useState } from "react";
+import FormField from "../../components/forms/FormField";
+import userService from "../../services/userService";
+
+export default function UserForm({ user, onSubmit, onCancel }) {
+  const [formData, setFormData] = useState(
+    user || { email: "", password: "", fullName: "", phone: "", role: "TECHNICIAN" }
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      if (user) {
+        await userService.updateUser(user.id, formData);
+      } else {
+        await userService.createUser(formData);
+      }
+      onSubmit();
+    } catch (err) {
+      setError(err.response?.data?.message || "Error al guardar");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <div className="bg-red-900 text-red-200 p-3 rounded">
+          {error}
+        </div>
+      )}
+
+      <FormField
+        label="Nombre Completo"
+        name="fullName"
+        value={formData.fullName}
+        onChange={handleChange}
+        required
+      />
+
+      <FormField
+        label="Email"
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+        disabled={!!user}
+      />
+
+      {!user && (
+        <FormField
+          label="Contraseña"
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+      )}
+
+      <FormField
+        label="Teléfono"
+        type="tel"
+        name="phone"
+        value={formData.phone}
+        onChange={handleChange}
+      />
+
+      <FormField
+        label="Rol"
+        type="select"
+        name="role"
+        value={formData.role}
+        onChange={handleChange}
+        options={[
+          { value: "ADMIN", label: "Administrador" },
+          { value: "TECHNICIAN", label: "Técnico" },
+          { value: "CLIENT", label: "Cliente" },
+        ]}
+        required
+      />
+
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 py-2 rounded"
+        >
+          {isLoading ? "Guardando..." : "Guardar"}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex-1 bg-gray-600 hover:bg-gray-700 py-2 rounded"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  );
+}
