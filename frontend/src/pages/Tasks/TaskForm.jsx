@@ -37,14 +37,10 @@ export default function TaskForm({ task, onSubmit, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="bg-red-900 text-red-200 p-3 rounded">
-          {error}
-        </div>
-      )}
+      {error && <div className="bg-red-900 text-red-200 p-3 rounded">{error}</div>}
 
       <FormField
-        label="Título"
+        label="Titulo"
         name="title"
         value={formData.title}
         onChange={handleChange}
@@ -52,7 +48,7 @@ export default function TaskForm({ task, onSubmit, onCancel }) {
       />
 
       <FormField
-        label="Descripción"
+        label="Descripcion"
         type="textarea"
         name="description"
         value={formData.description}
@@ -69,7 +65,7 @@ export default function TaskForm({ task, onSubmit, onCancel }) {
           { value: "LOW", label: "Baja" },
           { value: "MEDIUM", label: "Media" },
           { value: "HIGH", label: "Alta" },
-          { value: "CRITICAL", label: "Crítica" },
+          { value: "CRITICAL", label: "Critica" },
         ]}
       />
 
@@ -81,7 +77,7 @@ export default function TaskForm({ task, onSubmit, onCancel }) {
         onChange={handleChange}
         options={[
           { value: "OPEN", label: "Abierta" },
-          { value: "IN_PROGRESS", label: "En Progreso" },
+          { value: "IN_PROGRESS", label: "En progreso" },
           { value: "ON_HOLD", label: "Pausada" },
           { value: "COMPLETED", label: "Completada" },
           { value: "CANCELLED", label: "Cancelada" },

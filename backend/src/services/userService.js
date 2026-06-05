@@ -81,6 +81,11 @@ const createUser = async (companyId, userData) => {
 const updateUser = async (userId, companyId, userData) => {
   const { fullName, phone, role, status } = userData;
 
+  const existingUser = await getUserById(userId, companyId);
+  if (!existingUser) {
+    throw { statusCode: 404, message: "User not found" };
+  }
+
   const user = await prisma.user.update({
     where: { id: userId },
     data: {
@@ -104,6 +109,11 @@ const updateUser = async (userId, companyId, userData) => {
 };
 
 const deleteUser = async (userId, companyId) => {
+  const existingUser = await getUserById(userId, companyId);
+  if (!existingUser) {
+    throw { statusCode: 404, message: "User not found" };
+  }
+
   return prisma.user.update({
     where: { id: userId },
     data: { status: "INACTIVE" },

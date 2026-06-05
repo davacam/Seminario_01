@@ -37,8 +37,9 @@ cp frontend/.env.example frontend/.env
 
 # Update DATABASE_URL in backend/.env (use local PostgreSQL or Supabase)
 
-# Run migrations
+# Run migrations and create demo data
 cd backend && npm run prisma:migrate
+npm run prisma:seed
 
 # Start servers
 # Terminal 1: npm run dev (backend)

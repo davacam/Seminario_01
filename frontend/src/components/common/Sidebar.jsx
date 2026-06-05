@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { ChevronRight, Home, CheckSquare, Users, FileText, BarChart3, Settings, X } from "lucide-react";
+import { ChevronRight, Home, CheckSquare, Users, Building2, X } from "lucide-react";
 import useAuthStore from "../../store/authStore";
 import clsx from "clsx";
 
@@ -7,24 +7,16 @@ const menuItems = {
   ADMIN: [
     { icon: Home, label: "Dashboard", path: "/dashboard", key: "dashboard" },
     { icon: Users, label: "Usuarios", path: "/users", key: "users" },
-    { icon: Users, label: "Clientes", path: "/clients", key: "clients" },
+    { icon: Building2, label: "Clientes", path: "/clients", key: "clients" },
     { icon: CheckSquare, label: "Tareas", path: "/tasks", key: "tasks" },
-    { icon: FileText, label: "Formularios", path: "/forms", key: "forms" },
-    { icon: BarChart3, label: "Reportes", path: "/reports", key: "reports" },
-    { icon: Settings, label: "Configuración", path: "/settings", key: "settings" },
   ],
   TECHNICIAN: [
     { icon: Home, label: "Dashboard", path: "/dashboard", key: "dashboard" },
     { icon: CheckSquare, label: "Mis Tareas", path: "/tasks", key: "tasks" },
-    { icon: FileText, label: "Formularios", path: "/forms", key: "forms" },
-    { icon: BarChart3, label: "Mis Reportes", path: "/reports", key: "reports" },
-    { icon: Settings, label: "Mi Perfil", path: "/settings", key: "settings" },
   ],
   CLIENT: [
     { icon: Home, label: "Dashboard", path: "/dashboard", key: "dashboard" },
     { icon: CheckSquare, label: "Mis Solicitudes", path: "/tasks", key: "tasks" },
-    { icon: BarChart3, label: "Mis Reportes", path: "/reports", key: "reports" },
-    { icon: Settings, label: "Mi Perfil", path: "/settings", key: "settings" },
   ],
 };
 

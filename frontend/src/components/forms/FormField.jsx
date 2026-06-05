@@ -7,6 +7,7 @@ export default function FormField({
   error,
   required,
   options,
+  disabled,
 }) {
   return (
     <div className="mb-4">
@@ -20,6 +21,8 @@ export default function FormField({
           name={name}
           value={value || ""}
           onChange={onChange}
+          disabled={disabled}
+          required={required}
           className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
         >
           <option value="">Seleccionar...</option>
@@ -34,6 +37,8 @@ export default function FormField({
           name={name}
           value={value || ""}
           onChange={onChange}
+          disabled={disabled}
+          required={required}
           rows="4"
           className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
         />
@@ -43,6 +48,8 @@ export default function FormField({
           name={name}
           value={value || ""}
           onChange={onChange}
+          disabled={disabled}
+          required={required}
           className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
         />
       )}

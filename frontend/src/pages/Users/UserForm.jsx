@@ -37,14 +37,10 @@ export default function UserForm({ user, onSubmit, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="bg-red-900 text-red-200 p-3 rounded">
-          {error}
-        </div>
-      )}
+      {error && <div className="bg-red-900 text-red-200 p-3 rounded">{error}</div>}
 
       <FormField
-        label="Nombre Completo"
+        label="Nombre completo"
         name="fullName"
         value={formData.fullName}
         onChange={handleChange}
@@ -63,7 +59,7 @@ export default function UserForm({ user, onSubmit, onCancel }) {
 
       {!user && (
         <FormField
-          label="Contraseña"
+          label="Contrasena"
           type="password"
           name="password"
           value={formData.password}
@@ -73,7 +69,7 @@ export default function UserForm({ user, onSubmit, onCancel }) {
       )}
 
       <FormField
-        label="Teléfono"
+        label="Telefono"
         type="tel"
         name="phone"
         value={formData.phone}
@@ -88,7 +84,7 @@ export default function UserForm({ user, onSubmit, onCancel }) {
         onChange={handleChange}
         options={[
           { value: "ADMIN", label: "Administrador" },
-          { value: "TECHNICIAN", label: "Técnico" },
+          { value: "TECHNICIAN", label: "Tecnico" },
           { value: "CLIENT", label: "Cliente" },
         ]}
         required

@@ -9,9 +9,13 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
+    "prisma:seed": "node prisma/seed.js",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch",
     "lint": "eslint src --fix"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "keywords": ["techdesk", "field-service", "crm", "task-management"],
   "author": "TechDesk Team",

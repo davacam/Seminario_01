@@ -3,7 +3,7 @@ import api from "./api";
 const clientService = {
   getAllClients: async (page = 1) => {
     const response = await api.get("/clients", { params: { page } });
-    return response.data.data;
+    return response.data;
   },
 
   getClientById: async (clientId) => {

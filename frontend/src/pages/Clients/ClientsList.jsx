@@ -67,7 +67,7 @@ export default function ClientsList() {
   const columns = [
     { key: "name", label: "Nombre" },
     { key: "email", label: "Email" },
-    { key: "phone", label: "Teléfono" },
+    { key: "phone", label: "Telefono" },
     { key: "city", label: "Ciudad" },
   ];
 

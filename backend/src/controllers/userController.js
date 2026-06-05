@@ -6,14 +6,14 @@ const validateCreateUser = [
   body("password").isLength({ min: 8 }),
   body("fullName").trim().isLength({ min: 2 }),
   body("role").isIn(["ADMIN", "TECHNICIAN", "CLIENT"]),
-  body("phone").optional().isMobilePhone(),
+  body("phone").optional({ checkFalsy: true }).isMobilePhone(),
 ];
 
 const validateUpdateUser = [
   body("fullName").optional().trim().isLength({ min: 2 }),
   body("role").optional().isIn(["ADMIN", "TECHNICIAN", "CLIENT"]),
   body("status").optional().isIn(["ACTIVE", "INACTIVE", "SUSPENDED"]),
-  body("phone").optional().isMobilePhone(),
+  body("phone").optional({ checkFalsy: true }).isMobilePhone(),
 ];
 
 const listUsers = async (req, res, next) => {

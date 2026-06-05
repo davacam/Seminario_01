@@ -41,6 +41,11 @@ const createClient = async (companyId, clientData) => {
 };
 
 const updateClient = async (clientId, companyId, clientData) => {
+  const existingClient = await getClientById(clientId, companyId);
+  if (!existingClient) {
+    throw { statusCode: 404, message: "Client not found" };
+  }
+
   return prisma.client.update({
     where: { id: clientId },
     data: clientData,
@@ -48,6 +53,11 @@ const updateClient = async (clientId, companyId, clientData) => {
 };
 
 const deleteClient = async (clientId, companyId) => {
+  const existingClient = await getClientById(clientId, companyId);
+  if (!existingClient) {
+    throw { statusCode: 404, message: "Client not found" };
+  }
+
   return prisma.client.update({
     where: { id: clientId },
     data: { status: "INACTIVE" },

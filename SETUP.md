@@ -48,6 +48,9 @@ npm run prisma:generate
 # Ejecutar migraciones
 npm run prisma:migrate
 
+# Crear datos demo
+npm run prisma:seed
+
 # (Opcional) Abrir Prisma Studio para ver BD
 npm run prisma:studio
 ```

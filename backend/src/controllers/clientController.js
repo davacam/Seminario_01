@@ -3,8 +3,8 @@ const clientService = require("../services/clientService");
 
 const validateCreateClient = [
   body("name").trim().isLength({ min: 2 }),
-  body("email").optional().isEmail(),
-  body("phone").optional().isMobilePhone(),
+  body("email").optional({ checkFalsy: true }).isEmail(),
+  body("phone").optional({ checkFalsy: true }).isMobilePhone(),
 ];
 
 const listClients = async (req, res, next) => {

@@ -64,7 +64,7 @@ export default function TasksList() {
   const canEdit = userRole === "ADMIN" || userRole === "TECHNICIAN";
 
   const columns = [
-    { key: "title", label: "Título" },
+    { key: "title", label: "Titulo" },
     { key: "status", label: "Estado", render: (val) => <span className="px-2 py-1 bg-blue-700 rounded text-sm">{val}</span> },
     { key: "priority", label: "Prioridad" },
     { key: "createdAt", label: "Fecha", render: (val) => new Date(val).toLocaleDateString() },

@@ -67,6 +67,11 @@ const updateTask = async (taskId, companyId, taskData) => {
   const { title, description, priority, status, assignedToId, dueDate } =
     taskData;
 
+  const existingTask = await getTaskById(taskId, companyId);
+  if (!existingTask) {
+    throw { statusCode: 404, message: "Task not found" };
+  }
+
   return prisma.task.update({
     where: { id: taskId },
     data: {
@@ -86,6 +91,11 @@ const updateTask = async (taskId, companyId, taskData) => {
 };
 
 const updateTaskStatus = async (taskId, companyId, newStatus) => {
+  const existingTask = await getTaskById(taskId, companyId);
+  if (!existingTask) {
+    throw { statusCode: 404, message: "Task not found" };
+  }
+
   const updates = { status: newStatus };
 
   if (newStatus === "COMPLETED") {
@@ -104,6 +114,11 @@ const updateTaskStatus = async (taskId, companyId, newStatus) => {
 };
 
 const deleteTask = async (taskId, companyId) => {
+  const existingTask = await getTaskById(taskId, companyId);
+  if (!existingTask) {
+    throw { statusCode: 404, message: "Task not found" };
+  }
+
   return prisma.task.delete({
     where: { id: taskId },
   });

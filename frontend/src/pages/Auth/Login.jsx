@@ -80,7 +80,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30"
-                placeholder="••••••••"
+                placeholder="********"
                 required
               />
             </div>
@@ -99,6 +99,7 @@ export default function Login() {
             <p className="font-semibold mb-2">Demo Credentials:</p>
             <p>Email: admin@techdesk.com</p>
             <p>Password: Admin@12345</p>
+            <p className="mt-2">Tecnico: tecnico@techdesk.com / Tecnico@12345</p>
           </div>
         </div>
       </div>

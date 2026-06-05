@@ -9,7 +9,7 @@ coverage/
 
 # Production
 dist/
-build/
+build/ 
 out/
 
 # Misc
@@ -51,3 +51,4 @@ frontend/dist/
 # Prisma
 backend/prisma/dev.db
 backend/prisma/dev.db-journal
+node_modules

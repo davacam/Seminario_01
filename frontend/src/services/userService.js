@@ -3,7 +3,7 @@ import api from "./api";
 const userService = {
   getAllUsers: async (page = 1) => {
     const response = await api.get("/users", { params: { page } });
-    return response.data.data;
+    return response.data;
   },
 
   getUserById: async (userId) => {

@@ -46,14 +46,10 @@ export default function ClientForm({ client, onSubmit, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="bg-red-900 text-red-200 p-3 rounded">
-          {error}
-        </div>
-      )}
+      {error && <div className="bg-red-900 text-red-200 p-3 rounded">{error}</div>}
 
       <FormField
-        label="Nombre Empresa"
+        label="Nombre empresa"
         name="name"
         value={formData.name}
         onChange={handleChange}
@@ -69,7 +65,7 @@ export default function ClientForm({ client, onSubmit, onCancel }) {
       />
 
       <FormField
-        label="Teléfono"
+        label="Telefono"
         type="tel"
         name="phone"
         value={formData.phone}
@@ -77,7 +73,7 @@ export default function ClientForm({ client, onSubmit, onCancel }) {
       />
 
       <FormField
-        label="Dirección"
+        label="Direccion"
         name="address"
         value={formData.address}
         onChange={handleChange}

@@ -3,7 +3,7 @@ import api from "./api";
 const taskService = {
   getAllTasks: async (page = 1, filters = {}) => {
     const response = await api.get("/tasks", { params: { page, ...filters } });
-    return response.data.data;
+    return response.data;
   },
 
   getTaskById: async (taskId) => {

@@ -13,7 +13,7 @@ datasource db {
 // ==================== MULTI-TENANT ====================
 
 model Company {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
   name              String
   slug              String    @unique
   logoUrl           String?
@@ -37,7 +37,7 @@ model Company {
 // ==================== USUARIOS ====================
 
 model User {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
   companyId         String    @db.Uuid
   company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
@@ -69,7 +69,7 @@ model User {
 // ==================== CLIENTES ====================
 
 model Client {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
   companyId         String    @db.Uuid
   company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
@@ -97,7 +97,7 @@ model Client {
 // ==================== TAREAS ====================
 
 model Task {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
   companyId         String    @db.Uuid
   company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
@@ -119,7 +119,7 @@ model Task {
   completedAt       DateTime?
 
   location          Json?     // {lat, lng, address}
-  attachments       String[]  @db.Text[]
+  attachments       String[]  @db.Text
 
   formResponses     FormResponse[]
   reports           Report[]
@@ -137,7 +137,7 @@ model Task {
 // ==================== FORMULARIOS ====================
 
 model Form {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
   companyId         String    @db.Uuid
   company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
@@ -160,7 +160,7 @@ model Form {
 }
 
 model FormResponse {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
   formId            String    @db.Uuid
   form              Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
 
@@ -184,7 +184,7 @@ model FormResponse {
 // ==================== REPORTES ====================
 
 model Report {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
   companyId         String    @db.Uuid
   company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
@@ -198,7 +198,7 @@ model Report {
   content           String?
   format            String    @default("pdf")
   fileUrl           String?
-  sharedWith        String[]  @db.Uuid[]
+  sharedWith        String[]  @db.Uuid
   isPublic          Boolean   @default(false)
 
   createdAt         DateTime  @default(now())
@@ -211,7 +211,7 @@ model Report {
 // ==================== EVIDENCIAS ====================
 
 model Evidence {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
   taskId            String    @db.Uuid
   task              Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
@@ -231,7 +231,7 @@ model Evidence {
 // ==================== AUDITORÍA ====================
 
 model AuditLog {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String    @id @default(uuid()) @db.Uuid
   companyId         String    @db.Uuid
   company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
