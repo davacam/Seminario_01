@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Users, CheckSquare, Building2, Clock } from "lucide-react";
+import { ArrowRight, Building2, CheckSquare, Users } from "lucide-react";
 import useAuthStore from "../../store/authStore";
 import userService from "../../services/userService";
 import taskService from "../../services/taskService";
@@ -43,10 +43,10 @@ export default function AdminDashboard() {
     ).length;
 
     return [
-      { label: "Usuarios", value: users.length, icon: Users, color: "bg-blue-500" },
-      { label: "Tareas abiertas", value: openTasks, icon: CheckSquare, color: "bg-yellow-500" },
-      { label: "Tecnicos activos", value: activeTechnicians, icon: Users, color: "bg-green-500" },
-      { label: "Clientes", value: clients.length, icon: Building2, color: "bg-purple-500" },
+      { label: "Usuarios", value: users.length, icon: Users, color: "bg-sky-400", hint: "Equipo completo" },
+      { label: "Tareas abiertas", value: openTasks, icon: CheckSquare, color: "bg-amber-300", hint: "Pendientes y activas" },
+      { label: "Tecnicos activos", value: activeTechnicians, icon: Users, color: "bg-emerald-400", hint: "Disponibles" },
+      { label: "Clientes", value: clients.length, icon: Building2, color: "bg-fuchsia-400", hint: "Cuentas activas" },
     ];
   }, [clients.length, tasks, users]);
 
@@ -54,7 +54,8 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="mb-8">
+      <div className="panel relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-sky-400 via-emerald-400 to-amber-300" />
         <h1 className="text-3xl font-bold text-white">Hola, {user?.fullName}</h1>
         <p className="text-gray-400 mt-2">Resumen operativo de tu equipo</p>
       </div>
@@ -63,30 +64,31 @@ export default function AdminDashboard() {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+            <div key={stat.label} className="panel interactive-lift">
               <div className={`${stat.color} p-3 rounded-lg inline-flex mb-4`}>
-                <Icon size={24} className="text-white" />
+                <Icon size={24} className="text-slate-950" />
               </div>
               <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
               <p className="text-3xl font-bold text-white">
                 {isLoading ? "..." : stat.value}
               </p>
+              <p className="mt-2 text-xs text-slate-500">{stat.hint}</p>
             </div>
           );
         })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-        <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+        <div className="panel">
           <h2 className="text-xl font-bold text-white mb-4">Tareas recientes</h2>
           <div className="space-y-3">
             {recentTasks.length === 0 && (
               <p className="text-gray-400">No hay tareas registradas.</p>
             )}
             {recentTasks.map((task) => (
-              <div key={task.id} className="flex justify-between items-center p-3 bg-gray-700 rounded">
+              <div key={task.id} className="flex justify-between items-center rounded-lg border border-white/10 bg-white/[0.04] p-3">
                 <span className="text-gray-200">{task.title}</span>
-                <span className="px-3 py-1 bg-blue-500 text-white rounded text-sm font-semibold">
+                <span className="badge border-sky-400/20 bg-sky-400/10 text-sky-200">
                   {task.status}
                 </span>
               </div>
@@ -94,17 +96,17 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+        <div className="panel">
           <h2 className="text-xl font-bold text-white mb-4">Acciones rapidas</h2>
           <div className="space-y-3">
-            <Link className="block w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-center" to="/tasks">
-              Nueva tarea
+            <Link className="btn-primary flex w-full items-center justify-center gap-2" to="/tasks">
+              Nueva tarea <ArrowRight size={16} />
             </Link>
-            <Link className="block w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg text-center" to="/users">
-              Nuevo usuario
+            <Link className="btn-secondary flex w-full items-center justify-center gap-2" to="/users">
+              Nuevo usuario <ArrowRight size={16} />
             </Link>
-            <Link className="block w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-center" to="/clients">
-              Nuevo cliente
+            <Link className="btn-secondary flex w-full items-center justify-center gap-2" to="/clients">
+              Nuevo cliente <ArrowRight size={16} />
             </Link>
           </div>
         </div>

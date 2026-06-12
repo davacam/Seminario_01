@@ -29,28 +29,31 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 md:hidden z-40"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       <aside
         className={clsx(
-          "fixed md:relative w-64 bg-gray-800 h-screen border-r border-gray-700 transform transition-transform duration-200 z-50 md:z-0",
+          "fixed md:relative w-64 h-screen border-r border-white/10 bg-slate-950/85 backdrop-blur transform transition-transform duration-300 z-50 md:z-0",
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >
-        <div className="p-6 flex justify-between items-center border-b border-gray-700">
-          <h2 className="text-lg font-bold text-blue-500">Menu</h2>
+        <div className="p-6 flex justify-between items-center border-b border-white/10">
+          <div>
+            <h2 className="text-lg font-bold text-sky-300">TechDesk</h2>
+            <p className="text-xs text-slate-500">Operations console</p>
+          </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="md:hidden hover:bg-gray-700 p-1 rounded"
+            className="md:hidden hover:bg-white/10 p-1 rounded"
           >
             <X size={20} />
           </button>
         </div>
 
-        <nav className="mt-6">
+        <nav className="mt-6 space-y-1 px-3">
           {items.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -60,14 +63,14 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 key={item.key}
                 to={item.path}
                 className={clsx(
-                  "flex items-center gap-3 px-6 py-3 transition border-l-4",
+                  "group flex items-center gap-3 rounded-lg px-3 py-3 transition border border-transparent",
                   isActive
-                    ? "bg-gray-700 border-l-blue-500 text-blue-400"
-                    : "border-l-transparent hover:bg-gray-700 text-gray-300"
+                    ? "bg-sky-400/10 border-sky-400/20 text-sky-200 shadow-lg shadow-sky-950/20"
+                    : "hover:bg-white/5 text-slate-300"
                 )}
                 onClick={() => setIsOpen(false)}
               >
-                <Icon size={20} />
+                <Icon size={20} className="transition group-hover:scale-110" />
                 <span className="flex-1">{item.label}</span>
                 {isActive && <ChevronRight size={16} />}
               </Link>

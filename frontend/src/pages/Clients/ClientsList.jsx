@@ -73,14 +73,17 @@ export default function ClientsList() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Clientes</h1>
+      <div className="panel flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Clientes</h1>
+          <p className="mt-1 text-sm text-slate-400">Centraliza empresas, contactos y ubicaciones.</p>
+        </div>
         <button
           onClick={() => {
             setEditingClient(null);
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg"
+          className="btn-primary flex items-center gap-2"
         >
           <Plus size={20} />
           Nuevo Cliente

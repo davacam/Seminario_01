@@ -23,7 +23,7 @@ export default function FormField({
           onChange={onChange}
           disabled={disabled}
           required={required}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
+          className="input-field"
         >
           <option value="">Seleccionar...</option>
           {options?.map((opt) => (
@@ -40,7 +40,7 @@ export default function FormField({
           disabled={disabled}
           required={required}
           rows="4"
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
+          className="input-field"
         />
       ) : (
         <input
@@ -50,7 +50,7 @@ export default function FormField({
           onChange={onChange}
           disabled={disabled}
           required={required}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
+          className="input-field"
         />
       )}
 

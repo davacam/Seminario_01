@@ -7,6 +7,18 @@ import Table from "../../components/ui/Table";
 import Modal from "../../components/ui/Modal";
 import UserForm from "./UserForm";
 
+const roleBadge = {
+  ADMIN: "border-sky-400/20 bg-sky-400/10 text-sky-200",
+  TECHNICIAN: "border-emerald-400/20 bg-emerald-400/10 text-emerald-200",
+  CLIENT: "border-amber-300/20 bg-amber-300/10 text-amber-100",
+};
+
+const statusBadge = {
+  ACTIVE: "border-emerald-400/20 bg-emerald-400/10 text-emerald-200",
+  INACTIVE: "border-slate-300/20 bg-slate-300/10 text-slate-200",
+  SUSPENDED: "border-red-400/20 bg-red-400/10 text-red-200",
+};
+
 export default function UsersList() {
   const users = useUserStore((state) => state.users);
   const isLoading = useUserStore((state) => state.isLoading);
@@ -67,20 +79,23 @@ export default function UsersList() {
   const columns = [
     { key: "fullName", label: "Nombre" },
     { key: "email", label: "Email" },
-    { key: "role", label: "Rol" },
-    { key: "status", label: "Estado" },
+    { key: "role", label: "Rol", render: (val) => <span className={`badge ${roleBadge[val] || roleBadge.CLIENT}`}>{val}</span> },
+    { key: "status", label: "Estado", render: (val) => <span className={`badge ${statusBadge[val] || statusBadge.INACTIVE}`}>{val}</span> },
   ];
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Usuarios</h1>
+      <div className="panel flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Usuarios</h1>
+          <p className="mt-1 text-sm text-slate-400">Gestiona roles, acceso y estado del equipo.</p>
+        </div>
         <button
           onClick={() => {
             setEditingUser(null);
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg"
+          className="btn-primary flex items-center gap-2"
         >
           <Plus size={20} />
           Nuevo Usuario

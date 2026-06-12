@@ -8,29 +8,64 @@
   }
 
   body {
-    @apply bg-gray-900 text-gray-100;
+    @apply bg-slate-950 text-slate-100;
+    background:
+      linear-gradient(rgba(148, 163, 184, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.045) 1px, transparent 1px),
+      radial-gradient(circle at 20% 0%, rgba(14, 165, 233, 0.18), transparent 28%),
+      radial-gradient(circle at 95% 8%, rgba(34, 197, 94, 0.12), transparent 24%),
+      #020617;
+    background-size: 32px 32px, 32px 32px, auto, auto, auto;
   }
 
   input,
   textarea,
   select {
-    @apply bg-gray-700 border-gray-600 text-white placeholder-gray-400;
+    @apply bg-slate-950/70 border-white/10 text-white placeholder-slate-500;
   }
 
   input:focus,
   textarea:focus,
   select:focus {
-    @apply border-blue-500 ring-blue-500;
+    @apply border-sky-400 ring-sky-400/20;
   }
 }
 
 @layer components {
+  .app-shell {
+    @apply min-h-screen bg-slate-950/80 text-slate-100;
+  }
+
+  .surface {
+    @apply border border-white/10 bg-slate-900/80 shadow-2xl shadow-black/20 backdrop-blur;
+  }
+
+  .panel {
+    @apply surface rounded-lg p-6;
+  }
+
+  .page-enter {
+    animation: page-enter 420ms ease both;
+  }
+
+  .float-in {
+    animation: float-in 520ms ease both;
+  }
+
+  .interactive-lift {
+    @apply transition duration-200 ease-out;
+  }
+
+  .interactive-lift:hover {
+    transform: translateY(-2px);
+  }
+
   .btn-primary {
-    @apply px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium;
+    @apply px-4 py-2 bg-sky-500 hover:bg-sky-400 text-slate-950 rounded-lg transition font-semibold shadow-lg shadow-sky-950/30;
   }
 
   .btn-secondary {
-    @apply px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition font-medium;
+    @apply px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition font-medium border border-white/10;
   }
 
   .btn-danger {
@@ -38,10 +73,45 @@
   }
 
   .card {
-    @apply bg-gray-800 rounded-lg border border-gray-700 p-6;
+    @apply panel;
   }
 
   .input-field {
-    @apply w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30;
+    @apply w-full px-4 py-2 bg-slate-950/70 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold;
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulse-line {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(260%);
   }
 }

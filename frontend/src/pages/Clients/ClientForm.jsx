@@ -97,14 +97,14 @@ export default function ClientForm({ client, onSubmit, onCancel }) {
         <button
           type="submit"
           disabled={isLoading}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 py-2 rounded"
+          className="btn-primary flex-1 disabled:opacity-50"
         >
           {isLoading ? "Guardando..." : "Guardar"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 bg-gray-600 hover:bg-gray-700 py-2 rounded"
+          className="btn-secondary flex-1"
         >
           Cancelar
         </button>

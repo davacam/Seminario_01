@@ -7,12 +7,13 @@ export default function ClientDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="mb-8">
+      <div className="panel relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-sky-400 via-emerald-400 to-amber-300" />
         <h1 className="text-3xl font-bold text-white">Hola, {user?.fullName}</h1>
         <p className="text-gray-400 mt-2">Consulta el estado de tus solicitudes.</p>
       </div>
 
-      <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 max-w-xl">
+      <div className="panel interactive-lift max-w-xl">
         <div className="bg-blue-500 p-3 rounded-lg inline-flex mb-4">
           <CheckSquare size={24} className="text-white" />
         </div>
@@ -20,7 +21,7 @@ export default function ClientDashboard() {
         <p className="text-gray-400 mb-4">
           Revisa las tareas asociadas a tu cuenta y su estado actual.
         </p>
-        <Link className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg" to="/tasks">
+        <Link className="btn-primary inline-block" to="/tasks">
           Ver solicitudes
         </Link>
       </div>

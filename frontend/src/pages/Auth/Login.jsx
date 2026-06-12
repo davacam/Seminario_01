@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogIn, AlertCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, LogIn, ShieldCheck, Sparkles } from "lucide-react";
 import useAuthStore from "../../store/authStore";
 import authService from "../../services/authService";
 
@@ -38,70 +38,110 @@ export default function Login() {
     } finally {
       setIsLoading(false);
     }
-  }; 
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-blue-500 mb-2">TechDesk</h1>
-            <p className="text-gray-400">Field Technician Management Platform</p>
+    <div className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100">
+      <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <section className="page-enter hidden lg:block">
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-200">
+            <ShieldCheck size={16} />
+            Demo conectado a API propia
           </div>
+          <h1 className="max-w-2xl text-5xl font-bold leading-tight text-white">
+            Control operativo para equipos tecnicos en campo
+          </h1>
+          <p className="mt-5 max-w-xl text-lg text-slate-400">
+            Gestiona clientes, tareas, usuarios y estados desde una consola limpia,
+            lista para evolucionar hacia reportes y flujos mas avanzados.
+          </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded-lg flex items-center gap-3">
-                <AlertCircle size={20} />
-                <span>{error}</span>
+          <div className="mt-10 grid max-w-2xl grid-cols-3 gap-4">
+            {[
+              ["Usuarios", "24", "bg-sky-400"],
+              ["Tareas", "12", "bg-amber-400"],
+              ["Clientes", "08", "bg-emerald-400"],
+            ].map(([label, value, color], index) => (
+              <div
+                key={label}
+                className="float-in surface interactive-lift rounded-lg p-4"
+                style={{ animationDelay: `${index * 120}ms` }}
+              >
+                <div className={`mb-4 h-2 w-10 rounded-full ${color}`} />
+                <p className="text-sm text-slate-400">{label}</p>
+                <p className="mt-1 text-3xl font-bold text-white">{value}</p>
               </div>
-            )}
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30"
-                placeholder="your@email.com"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-30"
-                placeholder="********"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2"
-            >
-              <LogIn size={20} />
-              {isLoading ? "Logging in..." : "Login"}
-            </button>
-          </form>
-
-          <div className="mt-6 p-4 bg-gray-700 rounded-lg text-sm text-gray-300">
-            <p className="font-semibold mb-2">Demo Credentials:</p>
-            <p>Email: admin@techdesk.com</p>
-            <p>Password: Admin@12345</p>
-            <p className="mt-2">Tecnico: tecnico@techdesk.com / Tecnico@12345</p>
+            ))}
           </div>
-        </div>
+        </section>
+
+        <section className="float-in">
+          <div className="surface relative overflow-hidden rounded-lg p-8">
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-sky-400 via-emerald-400 to-amber-300" />
+            <div className="mb-8">
+              <div className="mb-4 inline-flex rounded-lg bg-sky-400/10 p-3 text-sky-200">
+                <Sparkles size={24} />
+              </div>
+              <h2 className="text-3xl font-bold text-white">TechDesk</h2>
+              <p className="mt-2 text-slate-400">Inicia sesion para entrar al demo operativo.</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="flex items-center gap-3 rounded-lg border border-red-400/20 bg-red-500/10 px-4 py-3 text-red-200">
+                  <AlertCircle size={20} />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-300">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input-field"
+                  placeholder="your@email.com"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-300">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-field"
+                  placeholder="********"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn-primary flex w-full items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <LogIn size={20} />
+                {isLoading ? "Ingresando..." : "Entrar al demo"}
+              </button>
+            </form>
+
+            <div className="mt-6 rounded-lg border border-white/10 bg-white/[0.04] p-4 text-sm text-slate-300">
+              <p className="mb-3 flex items-center gap-2 font-semibold text-white">
+                <CheckCircle2 size={16} className="text-emerald-300" />
+                Credenciales demo
+              </p>
+              <p>Admin: admin@techdesk.com / Admin@12345</p>
+              <p className="mt-1">Tecnico: tecnico@techdesk.com / Tecnico@12345</p>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

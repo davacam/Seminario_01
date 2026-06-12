@@ -31,19 +31,19 @@ export default function TechnicianDashboard() {
         label: "Mis tareas abiertas",
         value: tasks.filter((task) => task.status === "OPEN").length,
         icon: CheckSquare,
-        color: "bg-yellow-500",
+        color: "bg-amber-300",
       },
       {
         label: "En progreso",
         value: tasks.filter((task) => task.status === "IN_PROGRESS").length,
         icon: Clock,
-        color: "bg-blue-500",
+        color: "bg-sky-400",
       },
       {
         label: "Completadas",
         value: tasks.filter((task) => task.status === "COMPLETED").length,
         icon: ClipboardCheck,
-        color: "bg-green-500",
+        color: "bg-emerald-400",
       },
     ],
     [tasks]
@@ -51,7 +51,8 @@ export default function TechnicianDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="mb-8">
+      <div className="panel relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-sky-400 via-emerald-400 to-amber-300" />
         <h1 className="text-3xl font-bold text-white">Hola, {user?.fullName}</h1>
         <p className="text-gray-400 mt-2">Tus tareas y operaciones del dia</p>
       </div>
@@ -60,9 +61,9 @@ export default function TechnicianDashboard() {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+            <div key={stat.label} className="panel interactive-lift">
               <div className={`${stat.color} p-3 rounded-lg inline-flex mb-4`}>
-                <Icon size={24} className="text-white" />
+                <Icon size={24} className="text-slate-950" />
               </div>
               <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
               <p className="text-3xl font-bold text-white">
@@ -73,11 +74,11 @@ export default function TechnicianDashboard() {
         })}
       </div>
 
-      <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+      <div className="panel">
         <h2 className="text-xl font-bold text-white mb-4">Tareas recientes</h2>
         <div className="space-y-3">
           {tasks.slice(0, 4).map((task) => (
-            <div key={task.id} className="p-3 bg-gray-700 rounded border-l-4 border-l-blue-500">
+            <div key={task.id} className="rounded-lg border border-white/10 bg-white/[0.04] p-3">
               <p className="text-gray-200 font-semibold">{task.title}</p>
               <p className="text-gray-400 text-sm">{task.status}</p>
             </div>
@@ -86,7 +87,7 @@ export default function TechnicianDashboard() {
             <p className="text-gray-400">No tienes tareas asignadas.</p>
           )}
         </div>
-        <Link className="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg" to="/tasks">
+        <Link className="btn-primary mt-4 inline-block" to="/tasks">
           Ver tareas
         </Link>
       </div>

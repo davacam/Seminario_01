@@ -1,4 +1,4 @@
-import { LogOut, Moon, Sun, Menu } from "lucide-react";
+import { Activity, LogOut, Moon, Sun, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
 import useThemeStore from "../../store/themeStore";
@@ -16,31 +16,37 @@ export default function Navbar({ toggleSidebar }) {
   };
 
   return (
-    <nav className="bg-gray-800 border-b border-gray-700 px-6 py-4 flex justify-between items-center">
+    <nav className="border-b border-white/10 bg-slate-950/70 px-4 py-3 backdrop-blur md:px-6">
       <div className="flex items-center gap-4">
-        <button onClick={toggleSidebar} className="hover:bg-gray-700 p-2 rounded">
+        <button onClick={toggleSidebar} className="rounded-lg p-2 transition hover:bg-white/10">
           <Menu size={20} />
         </button>
-        <h1 className="text-xl font-bold text-blue-500">TechDesk</h1>
+        <div>
+          <h1 className="text-xl font-bold text-sky-300">TechDesk</h1>
+          <div className="hidden items-center gap-2 text-xs text-emerald-300 md:flex">
+            <Activity size={12} />
+            Demo operativo
+          </div>
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
         <button
           onClick={toggleTheme}
-          className="p-2 hover:bg-gray-700 rounded transition"
+          className="rounded-lg border border-white/10 p-2 transition hover:bg-white/10"
           title="Toggle theme"
         >
           {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
-        <div className="text-right">
+        <div className="hidden rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-right sm:block">
           <p className="text-sm font-medium">{user?.fullName}</p>
-          <p className="text-xs text-gray-400">{user?.role}</p>
+          <p className="text-xs text-slate-400">{user?.role}</p>
         </div>
 
         <button
           onClick={handleLogout}
-          className="p-2 hover:bg-red-900 rounded transition text-red-500"
+          className="rounded-lg p-2 text-red-300 transition hover:bg-red-500/10"
           title="Logout"
         >
           <LogOut size={20} />
