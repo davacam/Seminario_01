@@ -1,265 +1,383 @@
-# TechDesk - Field Technician Management Platform
+# TechDesk - Plataforma de Gestión de Técnicos de Campo
 
-Enterprise SaaS platform for managing field technicians, tasks, clients, and service operations.
+Plataforma SaaS empresarial para la gestión de técnicos de campo, tareas, clientes y operaciones de servicio.
 
-## 🎯 Overview
+## 🎯 Descripción General
 
-**TechDesk** is a comprehensive web application designed for:
-- **Maintenance Companies** - Manage technician teams and service requests
-- **Telecommunications** - Dispatch and track field operations
-- **IT Support** - Assign and monitor technical tasks
-- **General Services** - Coordinate service delivery
+**TechDesk** es una aplicación web integral diseñada para:
 
-## 🏗️ Architecture
+* **Empresas de mantenimiento**: administrar equipos técnicos y solicitudes de servicio.
+* **Telecomunicaciones**: coordinar y monitorear operaciones en campo.
+* **Soporte TI**: asignar y supervisar tareas técnicas.
+* **Empresas de servicios generales**: gestionar la prestación de servicios y atención al cliente.
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Frontend** | React 19 + Vite + Tailwind | Modern, responsive UI |
-| **Backend** | Node.js + Express 5 | Scalable REST API |
-| **Database** | PostgreSQL + Prisma ORM | Reliable data persistence |
-| **Authentication** | JWT + Refresh Tokens | Secure user sessions |
-| **State** | Zustand | Lightweight state management |
+---
 
-## 🚀 Quick Start
+## 🏗️ Arquitectura del Sistema
+
+| Capa          | Tecnología                     | Propósito                       |
+| ------------- | ------------------------------ | ------------------------------- |
+| Frontend      | React 19 + Vite + Tailwind CSS | Interfaz moderna y responsiva   |
+| Backend       | Node.js + Express 5            | API REST escalable              |
+| Base de Datos | PostgreSQL + Prisma ORM        | Persistencia confiable de datos |
+| Autenticación | JWT + Refresh Tokens           | Sesiones seguras                |
+| Estado Global | Zustand                        | Gestión ligera del estado       |
+
+---
+
+## 🚀 Inicio Rápido
+
+### Clonar el repositorio
 
 ```bash
-# Clone and setup
-git clone <repo>
+git clone <repositorio>
 cd Seminario_01
+```
 
-# Install dependencies
-cd backend && npm install
-cd ../frontend && npm install
+### Instalar dependencias
 
-# Configure environment
+```bash
+cd backend
+npm install
+
+cd ../frontend
+npm install
+```
+
+### Configurar variables de entorno
+
+```bash
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
+```
 
-# Update DATABASE_URL in backend/.env (use local PostgreSQL or Supabase)
+Configura la variable:
 
-# Run migrations and create demo data
-cd backend && npm run prisma:migrate
+```env
+DATABASE_URL=
+```
+
+con tu base de datos PostgreSQL local o Supabase.
+
+### Ejecutar migraciones y datos de prueba
+
+```bash
+cd backend
+
+npm run prisma:migrate
 npm run prisma:seed
-
-# Start servers
-# Terminal 1: npm run dev (backend)
-# Terminal 2: cd frontend && npm run dev
-
-# Access at http://localhost:5173
-# Login: admin@techdesk.com / Admin@12345
 ```
 
-📖 See [SETUP.md](./SETUP.md) for detailed instructions.
+### Iniciar servidores
 
-## 👥 Roles & Permissions
+Terminal 1:
 
-### Admin
-- Manage users (CRUD)
-- Create and assign tasks
-- Create dynamic forms
-- Generate and analyze reports
-- View company statistics
-
-### Technician  
-- View assigned tasks
-- Update task status
-- Submit forms and evidence
-- Generate field reports
-- Track work history
-
-### Client
-- Create service requests
-- View request status
-- Download generated reports
-- Access service history
-
-## 📋 Features (Current Phase)
-
-- ✅ User Authentication (JWT)
-- ✅ Login/Logout with Token Refresh
-- ✅ Role-based Dashboard
-- ✅ Dark Mode by Default
-- ⏳ User Management (Coming)
-- ⏳ Task Management (Coming)
-- ⏳ Dynamic Forms (Coming)
-- ⏳ Report Generation (Coming)
-
-## 📁 Project Structure
-
+```bash
+cd backend
+npm run dev
 ```
-├── backend/              Node.js API Server
-│   ├── src/
-│   │   ├── config/       Configuration files
-│   │   ├── middleware/   Auth, validation, error handling
-│   │   ├── routes/       API routes
-│   │   ├── controllers/  Request handlers
-│   │   ├── services/     Business logic
-│   │   └── utils/        Helpers (JWT, password hashing)
-│   ├── prisma/           Database schema & migrations
-│   └── .env              Environment variables
+
+Terminal 2:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Acceso:
+
+```text
+http://localhost:5173
+```
+
+Credenciales de demostración:
+
+```text
+Correo: admin@techdesk.com
+Contraseña: Admin@12345
+```
+
+---
+
+## 👥 Roles y Permisos
+
+### Administrador
+
+* Gestión completa de usuarios
+* Creación y asignación de tareas
+* Creación de formularios dinámicos
+* Generación de reportes
+* Visualización de estadísticas
+
+### Técnico
+
+* Visualizar tareas asignadas
+* Actualizar estados de trabajo
+* Registrar evidencias
+* Completar formularios
+* Consultar historial laboral
+
+### Cliente
+
+* Crear solicitudes de servicio
+* Consultar estado de solicitudes
+* Descargar reportes
+* Revisar historial de servicios
+
+---
+
+## 📋 Funcionalidades Actuales
+
+### Completadas
+
+* Autenticación JWT
+* Inicio y cierre de sesión
+* Renovación automática de tokens
+* Dashboard por roles
+* Tema oscuro
+
+### En Desarrollo
+
+* Gestión de usuarios
+* Gestión de tareas
+* Constructor de formularios
+* Generación de reportes
+
+---
+
+## 📁 Estructura del Proyecto
+
+```text
+backend/
 │
-├── frontend/             React SPA
-│   ├── src/
-│   │   ├── pages/        Full pages
-│   │   ├── components/   Reusable components
-│   │   ├── store/        Zustand state stores
-│   │   ├── services/     API client services
-│   │   ├── hooks/        Custom React hooks
-│   │   ├── utils/        Utilities & constants
-│   │   └── styles/       Global CSS
-│   └── .env              Environment variables
+├── src/
+│   ├── config/
+│   ├── middleware/
+│   ├── routes/
+│   ├── controllers/
+│   ├── services/
+│   └── utils/
 │
-└── SETUP.md              Installation guide
+├── prisma/
+└── .env
+
+frontend/
+│
+├── src/
+│   ├── pages/
+│   ├── components/
+│   ├── store/
+│   ├── services/
+│   ├── hooks/
+│   ├── utils/
+│   └── styles/
+│
+└── .env
 ```
 
-## 🔌 API Endpoints
+---
 
-### Authentication
+## 🔌 Endpoints de la API
+
+### Autenticación
+
+```http
+POST /api/v1/auth/login
+POST /api/v1/auth/refresh
+POST /api/v1/auth/logout
+GET  /api/v1/auth/me
 ```
-POST   /api/v1/auth/login       Login with email & password
-POST   /api/v1/auth/refresh     Refresh expired token
-POST   /api/v1/auth/logout      Logout user
-GET    /api/v1/auth/me          Get current user profile
+
+### Próximamente
+
+```http
+/api/v1/users
+/api/v1/tasks
+/api/v1/forms
+/api/v1/reports
+/api/v1/clients
+/api/v1/dashboard
 ```
 
-### Upcoming (Phases 2-4)
-- `/api/v1/users/*` - User management
-- `/api/v1/tasks/*` - Task CRUD & assignment
-- `/api/v1/forms/*` - Dynamic form builder
-- `/api/v1/reports/*` - Report generation
-- `/api/v1/clients/*` - Client management
-- `/api/v1/dashboard/*` - Analytics & KPIs
+---
 
-## 🛠️ Tech Stack Details
+## 🛠️ Tecnologías Utilizadas
 
 ### Backend
-- **Framework**: Express.js 5 (latest)
-- **ORM**: Prisma (type-safe queries)
-- **Authentication**: JWT with refresh token rotation
-- **Validation**: express-validator & zod
-- **Security**: Helmet, CORS, bcrypt password hashing
+
+* Node.js
+* Express 5
+* Prisma ORM
+* JWT
+* bcrypt
+* Helmet
+* CORS
+* Zod
+* Express Validator
 
 ### Frontend
-- **Library**: React 19 with hooks
-- **Build Tool**: Vite (fast dev server, optimized builds)
-- **Styling**: Tailwind CSS + custom dark mode
-- **Routing**: React Router v6
-- **State**: Zustand + persist middleware
-- **HTTP**: Axios with JWT interceptors
-- **Icons**: Lucide React
 
-### Database
-- **Engine**: PostgreSQL 15+ (ACID compliant)
-- **Type Safety**: Prisma generates TypeScript types
-- **Migrations**: Automatic with version control
-- **Features**: JSONB for flexible schemas, UUID primary keys
+* React 19
+* Vite
+* Tailwind CSS
+* React Router
+* Zustand
+* Axios
+* Lucide React
 
-## 📊 Development Phases
+### Base de Datos
 
-### Phase 1: Foundations ✅ (Current)
-- Project structure & tooling
-- JWT authentication  
-- Login page & dashboard
-- Role-based rendering
+* PostgreSQL
+* Prisma ORM
+* UUID
+* JSONB
 
-### Phase 2: Core Operations (Next)
-- CRUD for tasks, clients, users
-- Dynamic form builder
-- Task assignment & status tracking
-- Search & filtering
+---
 
-### Phase 3: Analytics & Reports
-- PDF report generation
-- Photo evidence upload
-- Dashboard with KPIs
-- Activity logging
+## 📊 Fases de Desarrollo
 
-### Phase 4: Production Ready
-- Unit & E2E tests
-- Performance optimizations
-- Mobile-responsive polish
-- Production deployment (Vercel + Railway)
+### Fase 1: Fundamentos ✅
 
-## 🔐 Security Features
+* Estructura del proyecto
+* Autenticación JWT
+* Login
+* Dashboard por roles
 
-- ✅ JWT tokens (15m expiry) with refresh tokens (7d)
-- ✅ Password hashing with bcrypt
-- ✅ Role-based access control (RBAC)
-- ✅ CORS validation
-- ✅ Input validation & sanitization
-- ✅ Helmet.js security headers
-- ✅ Environment variable isolation
-- ⏳ Rate limiting (coming)
-- ⏳ Audit logs (coming)
+### Fase 2: Operaciones Principales
 
-## 📈 Scalability Considerations
+* CRUD de usuarios
+* CRUD de clientes
+* CRUD de tareas
+* Constructor de formularios
+* Asignación de técnicos
 
-- Multi-tenant architecture (company isolation)
-- Database indexing on frequently queried fields
-- Paginated API responses (max 100 items/page)
-- Zustand with localStorage for client state
-- Code splitting with Vite & React.lazy
-- Service worker support (PWA ready)
+### Fase 3: Analítica y Reportes
 
-## 🚀 Deployment
+* Reportes PDF
+* Evidencias fotográficas
+* Indicadores KPI
+* Historial de actividades
 
-### Frontend (Vercel)
+### Fase 4: Producción
+
+* Pruebas automatizadas
+* Optimización de rendimiento
+* Diseño móvil avanzado
+* Despliegue en producción
+
+---
+
+## 🔐 Seguridad
+
+* Tokens JWT
+* Refresh Tokens
+* Control de acceso por roles (RBAC)
+* Contraseñas cifradas con bcrypt
+* Protección CORS
+* Validación de entradas
+* Cabeceras de seguridad con Helmet
+
+Próximamente:
+
+* Limitación de peticiones (Rate Limiting)
+* Auditoría de acciones
+* Registro de eventos
+
+---
+
+## 📈 Escalabilidad
+
+* Arquitectura multiempresa (multi-tenant)
+* Paginación en API
+* Índices optimizados
+* Estado persistente con Zustand
+* División de código (Code Splitting)
+* Preparado para PWA
+
+---
+
+## 🚀 Despliegue
+
+### Frontend
+
+Vercel
+
 ```bash
 vercel deploy --prod
 ```
 
-### Backend (Railway.app)
-```bash
-# Connect GitHub repo, Railway auto-deploys on push
-```
+### Backend
 
-### Database (Supabase)
-- Managed PostgreSQL with automatic backups
-- Built-in authentication (future phases)
-- Real-time subscriptions support
+Railway
 
-## 📝 Environment Variables
+Despliegue automático conectado a GitHub.
 
-See `.env.example` files in backend/ and frontend/ directories.
+### Base de Datos
 
-**Backend essentials:**
-- `DATABASE_URL` - PostgreSQL connection string
-- `JWT_SECRET` - Signing key (min 32 chars)
-- `CORS_ORIGIN` - Frontend URL
+Supabase PostgreSQL
 
-**Frontend essentials:**
-- `VITE_API_URL` - Backend API endpoint
-
-## 🐛 Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| Can't connect to database | Check DATABASE_URL and PostgreSQL is running |
-| CORS errors | Ensure CORS_ORIGIN includes your frontend URL |
-| Token expired | Frontend auto-refreshes, check refresh token |
-| Port already in use | Kill process or change PORT in .env |
-
-## 📚 Documentation
-
-- [Setup Guide](./SETUP.md) - Installation & configuration
-- [API Documentation](./backend/README.md) - Endpoint details
-- [Frontend Guide](./frontend/README.md) - Component structure
-
-## 🤝 Contributing
-
-1. Create feature branch: `git checkout -b feature/task-management`
-2. Follow existing code structure from Phase 1
-3. Test locally before committing
-4. Submit PR with clear description
-
-## 📄 License
-
-MIT - See LICENSE file
-
-## 👨‍💼 Project Lead
-
-Designed and architected as an enterprise SaaS solution for field service management.
+* Copias de seguridad automáticas
+* Escalabilidad administrada
+* Posibilidad de tiempo real en futuras versiones
 
 ---
 
-**Status**: Alpha (Phase 1 Complete) | **Next**: Phase 2 - Core Operations
+## 📝 Variables de Entorno
+
+### Backend
+
+```env
+DATABASE_URL=
+JWT_SECRET=
+CORS_ORIGIN=
+```
+
+### Frontend
+
+```env
+VITE_API_URL=
+```
+
+---
+
+## 🐛 Solución de Problemas
+
+| Problema                        | Solución                  |
+| ------------------------------- | ------------------------- |
+| No conecta con la base de datos | Verificar DATABASE_URL    |
+| Error CORS                      | Revisar CORS_ORIGIN       |
+| Token expirado                  | Verificar refresh token   |
+| Puerto ocupado                  | Cambiar el puerto en .env |
+
+---
+
+## 🤝 Contribuciones
+
+1. Crear una rama:
+
+```bash
+git checkout -b feature/nueva-funcionalidad
+```
+
+2. Desarrollar y probar localmente.
+
+3. Realizar commit.
+
+4. Subir cambios y crear Pull Request.
+
+---
+
+## 📄 Licencia
+
+Licencia MIT.
+
+---
+
+## 👨‍💼 Proyecto Académico
+
+Desarrollado como una solución empresarial para la gestión de servicios técnicos de campo.
+
+**Estado actual:** Versión Alpha (Fase 1)
+
+**Próximo objetivo:** Fase 2 - Gestión de Usuarios, Clientes y Tareas.
+
