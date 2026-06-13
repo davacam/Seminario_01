@@ -28,4 +28,4 @@ jobs:
       # 4. Copia los archivos al VPS
       - name: Push files to VPS
         run: |
-          scp -r ./* ${{ secrets.USER }}@${{ secrets.IP }}:/home/tasksmdaw/pokemon/
+          scp -r ./* ${{ secrets.USER }}@${{ secrets.IP }}:/pokemon/
