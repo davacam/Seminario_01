@@ -23,3 +23,19 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out code
         uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH }}
+
+      - name: Add server to known_hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.ip }} >> ~/.ssh/known_hosts
+
+      - name: update
+        run: |
+          sudo apt-get update
+          - name: Push files and images to VPS
+            run: |
+            scp -r ./* ${{ secrets.USER }}@${{ secrets.IP }}:/home/taskmdaw/pokemon
