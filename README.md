@@ -1,5 +1,7 @@
 # TechDesk - Plataforma de Gestión de Técnicos de Campo
 
+cual quier cosa 
+
 Plataforma SaaS empresarial para la gestión de técnicos de campo, tareas, clientes y operaciones de servicio.
 
 ## 🎯 Descripción General
