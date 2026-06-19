@@ -140,9 +140,9 @@ Contraseña: Admin@12345
 
 ### En Desarrollo
 
-* Gestión de usuarios
-* Gestión de tareas
-* Constructor de formularios
+* Gestión de usuarios  ✅
+* Gestión de tareas ✅
+* Constructor de formularios ✅
 * Generación de reportes
 
 ---

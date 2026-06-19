@@ -1,258 +1,423 @@
-# TechDesk Backend - API Server
+# TechDesk Backend
 
-Node.js + Express + Prisma REST API for field technician management.
+API REST para la demo de TechDesk, una plataforma de gestion de tecnicos, clientes y tareas de servicio.
 
-## 🚀 Getting Started
+El backend esta construido con Node.js, Express, Prisma y PostgreSQL. En desarrollo puede usar PostgreSQL local, pero el flujo recomendado para esta demo es Supabase, usando su base PostgreSQL administrada.
 
-### Prerequisites
+## Stack
+
 - Node.js 18+
-- PostgreSQL 14+ (or Supabase)
+- Express 4
+- Prisma ORM
+- PostgreSQL / Supabase
+- JWT con access token y refresh token
+- bcrypt para contrasenas
+- express-validator para validacion de entrada
+- Helmet y CORS para seguridad basica
 
-### Setup
+## Inicio Rapido
 
 ```bash
+cd backend
 npm install
+```
 
-# Configure .env (copy from .env.example)
+Copia el archivo de entorno y configura tus credenciales:
+
+```bash
 cp .env.example .env
+```
 
-# Update DATABASE_URL with your PostgreSQL connection
+En Windows PowerShell puedes usar:
 
-# Run migrations
+```powershell
+Copy-Item .env.example .env
+```
+
+Configura al menos estas variables en `backend/.env`:
+
+```env
+NODE_ENV=development
+PORT=3000
+
+DATABASE_URL="postgresql://..."
+DIRECT_URL="postgresql://..."
+
+JWT_SECRET="una-clave-larga-de-al-menos-32-caracteres"
+JWT_REFRESH_SECRET="otra-clave-larga-de-al-menos-32-caracteres"
+
+CORS_ORIGIN="http://localhost:5173,http://localhost:3000"
+```
+
+Luego ejecuta Prisma:
+
+```bash
+npm run prisma:generate
 npm run prisma:migrate
+npm run prisma:seed
+```
 
-# Start development server
+Inicia el servidor:
+
+```bash
 npm run dev
 ```
 
-Server runs on `http://localhost:3000`
+La API queda disponible en:
 
-## 📁 Project Structure
-
-```
-src/
-├── config/           Configuration & initialization
-│   ├── env.js        Environment variable validation
-│   └── database.js   Prisma client setup
-│
-├── middleware/       Express middleware
-│   ├── auth.js       JWT verification
-│   ├── authorize.js  Role-based access control
-│   └── errorHandler.js Global error handling
-│
-├── routes/           API route definitions
-│   └── auth.js       Authentication endpoints
-│
-├── controllers/      Request handlers
-│   └── authController.js Auth handlers & validation
-│
-├── services/         Business logic layer
-│   └── authService.js Authentication logic
-│
-├── utils/            Utility functions
-│   ├── jwt.js        JWT creation & verification
-│   ├── password.js   Password hashing & validation
-│   └── validators.js Input validation
-│
-├── constants/        Constants & enums
-│   ├── roles.js      User role definitions
-│   └── permissions.js Permission mappings
-│
-├── app.js            Express app setup
-└── server.js         Entry point
-
-prisma/
-├── schema.prisma     Database schema & relations
-└── migrations/       Migration history
+```txt
+http://localhost:3000
 ```
 
-## 🔐 Authentication Flow
+Health check:
 
-1. **Login** (`POST /api/v1/auth/login`)
-   - Email + password → Verify credentials
-   - Generate JWT access token (15m expiry)
-   - Generate refresh token (7d, stored in DB)
-   - Return both tokens to client
-
-2. **Protected Requests**
-   - Client includes: `Authorization: Bearer <access_token>`
-   - Middleware verifies JWT signature & expiry
-   - Request proceeds with `req.user` populated
-
-3. **Token Refresh** (`POST /api/v1/auth/refresh`)
-   - Client sends expired access token + refresh token
-   - Server validates refresh token
-   - Generate new access token
-   - Continue seamlessly (frontend auto-handles)
-
-4. **Logout** (`POST /api/v1/auth/logout`)
-   - Client deletes tokens from localStorage
-   - Future: Token blacklist in Redis for extra security
-
-## 📡 API Endpoints
-
-### Phase 1 (Current)
-
-#### Authentication
-- `POST /api/v1/auth/login` - User login
-  - Body: `{ email, password }`
-  - Returns: `{ accessToken, refreshToken, user }`
-
-- `POST /api/v1/auth/refresh` - Refresh token
-  - Body: `{ refreshToken }`
-  - Returns: `{ accessToken, user }`
-
-- `POST /api/v1/auth/logout` - User logout
-  - Returns: `{ message: "Logged out successfully" }`
-
-- `GET /api/v1/auth/me` - Current user profile
-  - Headers: `Authorization: Bearer <token>`
-  - Returns: `{ user }`
-
-### Phase 2 (Upcoming)
-- `GET /api/v1/users` - List users
-- `POST /api/v1/users` - Create user
-- `PUT /api/v1/users/:id` - Update user
-- `DELETE /api/v1/users/:id` - Delete user
-
-### Phase 3-4
-- Task management endpoints
-- Form & report endpoints
-- Client management endpoints
-- Dashboard analytics endpoints
-
-## 🔧 Configuration
-
-### Environment Variables (.env)
-
-```env
-# Server
-NODE_ENV=development          # development, production
-PORT=3000                     # Server port
-
-# Database
-DATABASE_URL=postgresql://... # PostgreSQL connection string
-
-# JWT
-JWT_SECRET=...               # Signing key (min 32 chars)
-JWT_REFRESH_SECRET=...       # Refresh token signing key
-JWT_EXPIRE_IN=15m            # Access token expiry
-JWT_REFRESH_EXPIRE_IN=7d     # Refresh token expiry
-
-# CORS
-CORS_ORIGIN=http://localhost:5173  # Frontend URL
-
-# Logging
-LOG_LEVEL=debug              # debug, info, warn, error
+```txt
+GET /health
 ```
 
-## 🗄️ Database
+## Supabase
 
-### Schema Highlights
-- **Multi-tenant**: `companies` table for data isolation
-- **Users**: email unique per company, soft deletes via status
-- **Tasks**: with relationships to clients, assignments, evidence
-- **Forms**: dynamic JSON schema for field definitions
-- **Audit**: all actions logged for compliance
+El proyecto usa Prisma contra PostgreSQL. Supabase funciona como proveedor de la base de datos.
 
-### Key Tables
-- `companies` - Tenant data
-- `users` - System users with roles
-- `clients` - Service clients
-- `tasks` - Work assignments
-- `forms` - Form templates
-- `form_responses` - Completed forms
-- `reports` - Generated documents
-- `evidence` - Task photos/attachments
-- `audit_logs` - Action tracking
+En Supabase, usa:
 
-### Running Migrations
+- `DATABASE_URL`: cadena pooled/transaction para la app.
+- `DIRECT_URL`: cadena directa para migraciones de Prisma.
+
+El schema ya incluye:
+
+```prisma
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+```
+
+## Credenciales Demo
+
+El seed crea estos usuarios:
+
+```txt
+Admin:
+email: admin@techdesk.com
+password: Admin@12345
+
+Tecnico:
+email: tecnico@techdesk.com
+password: Tecnico@12345
+```
+
+Tambien crea una compania demo, un cliente demo y una tarea inicial.
+
+## Scripts
+
 ```bash
-# View pending migrations
-npm run prisma:migrate
+npm run dev              # Servidor con nodemon
+npm start                # Servidor en modo normal
+npm run prisma:generate  # Genera Prisma Client
+npm run prisma:migrate   # Crea/aplica migraciones en desarrollo
+npm run prisma:seed      # Inserta datos demo
+npm run prisma:studio    # Abre Prisma Studio
+npm run lint             # ESLint con autofix
+npm run test             # Jest
+npm run test:watch       # Jest en modo watch
+```
 
-# Apply migrations
-npm run prisma:migrate
+Nota: no hay script `build` para el backend porque este servicio usa CommonJS y se ejecuta directamente con Node.
 
-# Open Prisma Studio (visual database browser)
+## Estructura
+
+```txt
+backend/
+  prisma/
+    schema.prisma
+    seed.js
+    migrations/
+  src/
+    app.js
+    server.js
+    config/
+      database.js
+      env.js
+    controllers/
+      authController.js
+      clientController.js
+      taskController.js
+      userController.js
+    middleware/
+      auth.js
+      authorize.js
+      errorHandler.js
+    routes/
+      auth.js
+      clients.js
+      tasks.js
+      users.js
+    services/
+      authService.js
+      clientService.js
+      taskService.js
+      userService.js
+    utils/
+      jwt.js
+      password.js
+```
+
+Algunos archivos antiguos con nombres en espanol (`usuario*`, `tarea*`) permanecen en el repositorio, pero la API principal actual usa las rutas en ingles montadas en `src/app.js`.
+
+## Autenticacion
+
+### Login
+
+```txt
+POST /api/v1/auth/login
+```
+
+Body:
+
+```json
+{
+  "email": "admin@techdesk.com",
+  "password": "Admin@12345"
+}
+```
+
+Respuesta:
+
+```json
+{
+  "success": true,
+  "data": {
+    "accessToken": "...",
+    "refreshToken": "...",
+    "user": {
+      "id": "...",
+      "email": "admin@techdesk.com",
+      "fullName": "Admin Demo",
+      "role": "ADMIN",
+      "companyId": "..."
+    }
+  }
+}
+```
+
+### Requests protegidos
+
+Enviar el access token:
+
+```txt
+Authorization: Bearer <accessToken>
+```
+
+### Refresh token
+
+```txt
+POST /api/v1/auth/refresh
+```
+
+Body:
+
+```json
+{
+  "refreshToken": "..."
+}
+```
+
+### Logout
+
+```txt
+POST /api/v1/auth/logout
+```
+
+Requiere token. Actualmente responde OK y el frontend borra los tokens del cliente.
+
+## Endpoints
+
+### Sistema
+
+```txt
+GET /health
+GET /
+```
+
+### Auth
+
+```txt
+POST /api/v1/auth/login
+POST /api/v1/auth/refresh
+POST /api/v1/auth/logout
+GET  /api/v1/auth/me
+```
+
+### Usuarios
+
+Todas las rutas requieren autenticacion. La gestion de usuarios requiere rol `ADMIN`.
+
+```txt
+GET    /api/v1/users
+POST   /api/v1/users
+GET    /api/v1/users/:id
+PUT    /api/v1/users/:id
+DELETE /api/v1/users/:id
+```
+
+### Clientes
+
+Todas las rutas requieren autenticacion. Crear, editar y eliminar requiere rol `ADMIN`.
+
+```txt
+GET    /api/v1/clients
+POST   /api/v1/clients
+GET    /api/v1/clients/:id
+PUT    /api/v1/clients/:id
+DELETE /api/v1/clients/:id
+```
+
+### Tareas
+
+Todas las rutas requieren autenticacion.
+
+```txt
+GET    /api/v1/tasks
+POST   /api/v1/tasks
+GET    /api/v1/tasks/:id
+PUT    /api/v1/tasks/:id
+PATCH  /api/v1/tasks/:id/status
+DELETE /api/v1/tasks/:id
+```
+
+Reglas actuales:
+
+- `ADMIN`: puede crear, editar y eliminar tareas.
+- `TECHNICIAN`: puede ver sus tareas asignadas y editar/actualizar estado.
+- `CLIENT`: actualmente puede consultar tareas segun las reglas del backend existente.
+
+## Modelo de Datos
+
+Tablas principales:
+
+- `Company`: compania/tenant.
+- `User`: usuarios con roles `ADMIN`, `TECHNICIAN` y `CLIENT`.
+- `Client`: clientes de la compania.
+- `Task`: tareas de servicio.
+- `Form` y `FormResponse`: base para formularios dinamicos.
+- `Report`: base para reportes.
+- `Evidence`: evidencias asociadas a tareas.
+- `AuditLog`: registro futuro de actividad.
+
+El proyecto ya esta preparado para multi-tenant usando `companyId` en usuarios, clientes, tareas, formularios, reportes y auditoria.
+
+## Migraciones y Datos Demo
+
+Aplicar migraciones:
+
+```bash
+npm run prisma:migrate
+```
+
+Regenerar cliente Prisma:
+
+```bash
+npm run prisma:generate
+```
+
+Insertar datos demo:
+
+```bash
+npm run prisma:seed
+```
+
+Abrir Prisma Studio:
+
+```bash
 npm run prisma:studio
 ```
 
-## 🛡️ Security
+## Seguridad
 
-- **Password Hashing**: bcrypt with salt rounds 10
-- **JWT**: HS256 algorithm, payload verification
-- **CORS**: Restricted to frontend domain
-- **Helmet**: Security headers (X-Frame-Options, etc)
-- **Input Validation**: express-validator on all endpoints
-- **Rate Limiting**: Coming in Phase 2
+Implementado:
 
-## 📊 Development
+- Passwords hasheadas con bcrypt.
+- JWT access token y refresh token.
+- Middleware de autenticacion.
+- Autorizacion por rol.
+- CORS configurable.
+- Helmet para headers de seguridad.
+- Validacion de entrada con express-validator.
+- Separacion por `companyId` en servicios principales.
 
-### Available Scripts
-```bash
-npm run dev              # Start with nodemon
-npm start               # Start production server
-npm run prisma:generate # Generate Prisma Client
-npm run prisma:migrate  # Run migrations
-npm run prisma:studio   # Visual database UI
-npm run lint            # ESLint (with auto-fix)
-npm run test            # Jest unit tests
+Pendiente recomendado:
+
+- Rate limiting.
+- Registro real en `AuditLog`.
+- Rotacion/revocacion persistente de refresh tokens.
+- Politicas de almacenamiento para evidencias.
+- Tests automatizados para endpoints principales.
+
+## Integracion con Frontend
+
+El frontend debe apuntar a:
+
+```env
+VITE_API_URL=http://localhost:3000/api/v1
 ```
 
-### Debugging
-```bash
-# Enable detailed logs
-DEBUG=* npm run dev
+El backend debe permitir ese origen en:
 
-# Debug specific module
-DEBUG=app npm run dev
+```env
+CORS_ORIGIN="http://localhost:5173,http://localhost:3000"
 ```
 
-### Hot Reload
-Nodemon watches `src/` and auto-restarts on changes.
+## Troubleshooting
 
-## 🚀 Deployment
+### Prisma no conecta con Supabase
 
-### Production Build
-```bash
-npm run build
-npm start
-```
+Revisa:
 
-### Deploy to Railway.app
-1. Connect GitHub repository
-2. Railway auto-detects Node.js
-3. Set environment variables in Railway dashboard
-4. Auto-deploys on push to `main`
+- `DATABASE_URL` y `DIRECT_URL`.
+- Password de Supabase.
+- Que la URL tenga `sslmode=require` si Supabase la entrega asi.
+- Que hayas ejecutado `npm run prisma:generate`.
 
-### Database
-Use Supabase PostgreSQL (Manage → Connections → Copy URI)
+### Error de CORS
 
-## 🧪 Testing
+Agrega la URL del frontend en `CORS_ORIGIN`.
+
+### Login falla
+
+Ejecuta:
 
 ```bash
-npm run test              # Run all tests
-npm run test:watch       # Watch mode
-npm run test -- --coverage  # With coverage report
+npm run prisma:seed
 ```
 
-## 📚 Additional Resources
+Luego usa las credenciales demo.
 
-- [Prisma Documentation](https://www.prisma.io/docs/)
-- [Express.js Guide](https://expressjs.com/)
-- [JWT Best Practices](https://tools.ietf.org/html/rfc7519)
-- [OWASP API Security](https://owasp.org/www-project-api-security/)
+### PowerShell bloquea npm/npx
 
-## 🤝 Contributing
+En Windows puedes usar:
 
-Follow the established patterns from Phase 1:
-- Services handle business logic
-- Controllers handle requests/responses
-- Middleware for cross-cutting concerns
-- Centralized error handling
+```powershell
+npm.cmd run dev
+npx.cmd prisma validate
+```
 
----
+## Estado Actual
 
-**Current Phase**: 1 - Authentication Foundation  
-**Next Phase**: User Management & CRUD Operations
+La demo backend ya soporta:
+
+- Autenticacion JWT.
+- CRUD basico de usuarios.
+- CRUD basico de clientes.
+- CRUD basico de tareas.
+- Conexion PostgreSQL/Supabase con Prisma.
+- Datos demo por seed.
+
+Siguientes mejoras naturales:
+
+- Formularios dinamicos reales.
+- Evidencias con subida de archivos.
+- Reportes PDF.
+- Dashboard analytics desde endpoints dedicados.
+- Tests de integracion.
