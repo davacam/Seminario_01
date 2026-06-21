@@ -14,18 +14,25 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      # 2. Configura la clave SSH para conectar al VPS
+      # 2. Instala las dependencias
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      # 3. Genera el build de React
+      - name: Build React App
+        run: |
+          cd frontend
+          npm run build
+
+      # 4. Configura la clave SSH para conectar al VPS
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH }}
 
-      # 3. Agrega el servidor a known_hosts
+      # 5. Agrega el servidor a known_hosts
       - name: Add server to known_hosts
         run: |
-          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
-
-      # 4. Copia los archivos al VPS (solo dist)
-      - name: Push files to VPS
-        run: |
-          scp -r ./dist/* ${{ secrets.USER }}@${{ secrets.IP }}:/home/tasksmdaw
+          ssh-keyscan -H ${{ secrets.IP }}
