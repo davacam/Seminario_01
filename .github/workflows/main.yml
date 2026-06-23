@@ -2,42 +2,41 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-24.04
 
     steps:
-      # 1. Clona el código del repositorio
-      - name: Check out code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 2. Instala las dependencias
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
       - name: Install dependencies
         run: |
           cd frontend
           npm install
 
-      # 3. Genera el build de React
       - name: Build React App
         run: |
           cd frontend
           npm run build
 
-      # 4. Configura la clave SSH para conectar al VPS
       - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.3
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH }}
 
-      # 5. Agrega el servidor a known_hosts
       - name: Add server to known_hosts
         run: |
+          mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
 
-      # 6. Copia los archivos al VPS (solo dist en el frontend)
       - name: Push files to VPS
         run: |
-          scp -r ./frontend/dist/* ${{ secrets.USER }}@${{ secrets.IP }}:/home/tasksmdaw
+          scp -r ./frontend/dist/* \
+          ${{ secrets.USER }}@${{ secrets.IP }}:/home/tasksmdaw/
