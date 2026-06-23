@@ -1,4 +1,4 @@
-name: Deploy Hola Mundo to VPS
+name: Deploy Hola Mundo to VPS 2
 
 on:
   push:
