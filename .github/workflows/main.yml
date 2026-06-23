@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Deploy Hola Mundo to VPS
 
 on:
   push:
@@ -10,33 +10,44 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies
+      - name: Crear archivo Hola Mundo
         run: |
-          cd frontend
-          npm install
+          cat > index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="es">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Hola Mundo</title>
+          </head>
+          <body>
+            <h1>Hola mundo desde GitHub Actions</h1>
+            <p>El despliegue al servidor fue exitoso.</p>
+          </body>
+          </html>
+          EOF
 
-      - name: Build React App
-        run: |
-          cd frontend
-          npm run build
-
-      - name: Setup SSH
+      - name: Configurar conexión SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH }}
 
-      - name: Add server to known_hosts
+      - name: Registrar servidor SSH
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${{ secrets.IP }}" >> ~/.ssh/known_hosts
 
-      - name: Push files to VPS
+      - name: Crear directorio en el servidor
         run: |
-          scp -r ./frontend/dist/* \
-          ${{ secrets.USER }}@${{ secrets.IP }}:/home/tasksmdaw/
+          ssh "${{ secrets.USER }}@${{ secrets.IP }}" \
+          "mkdir -p /home/${{ secrets.USER }}/hola-mundo"
+
+      - name: Copiar archivo al servidor
+        run: |
+          scp index.html \
+          "${{ secrets.USER }}@${{ secrets.IP }}:/home/${{ secrets.USER }}/hola-mundo/index.html"
+
+      - name: Verificar despliegue
+        run: |
+          ssh "${{ secrets.USER }}@${{ secrets.IP }}" \
+          "ls -la /home/${{ secrets.USER }}/hola-mundo && cat /home/${{ secrets.USER }}/hola-mundo/index.html"
