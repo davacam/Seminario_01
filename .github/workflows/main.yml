@@ -22,27 +22,79 @@ jobs:
           </head>
           <body>
             <h1>Hola mundo desde GitHub Actions</h1>
-            <p>El archivo fue desplegado correctamente en el VPS.</p>
+            <p>Despliegue realizado correctamente.</p>
           </body>
           </html>
           EOF
 
-      - name: Configurar conexión SSH
+      - name: Configurar clave privada SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH }}
 
+      - name: Preparar carpeta SSH
+        run: |
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+
+      - name: Verificar puerto SSH del servidor
+        env:
+          SERVER_IP: ${{ secrets.IP }}
+        run: |
+          echo "Verificando conexión con $SERVER_IP por el puerto 22..."
+
+          if timeout 15 bash -c "cat < /dev/null > /dev/tcp/$SERVER_IP/22"; then
+            echo "El puerto 22 está disponible."
+          else
+            echo "::error::No fue posible conectarse a $SERVER_IP por el puerto 22."
+            echo "Revisa el firewall, el servicio SSH o si el servidor usa otro puerto."
+            exit 1
+          fi
+
       - name: Agregar servidor a known_hosts
+        env:
+          SERVER_IP: ${{ secrets.IP }}
         run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H "${{ secrets.IP }}" >> ~/.ssh/known_hosts
+          set -euo pipefail
 
-      - name: Copiar archivo al VPS
-        run: |
-          scp index.html \
-          "${{ secrets.USER }}@${{ secrets.IP }}:/home/${{ secrets.USER }}/index.html"
+          ssh-keyscan -T 15 -p 22 -H "$SERVER_IP" \
+            > "$HOME/.ssh/known_hosts"
 
-      - name: Verificar archivo en el servidor
+          if [ ! -s "$HOME/.ssh/known_hosts" ]; then
+            echo "::error::No se pudo obtener la identificación SSH del servidor."
+            exit 1
+          fi
+
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Probar autenticación SSH
+        env:
+          SERVER_IP: ${{ secrets.IP }}
+          SERVER_USER: ${{ secrets.USER }}
         run: |
-          ssh "${{ secrets.USER }}@${{ secrets.IP }}" \
-          "ls -la /home/${{ secrets.USER }}/index.html && cat /home/${{ secrets.USER }}/index.html"
+          ssh \
+            -p 22 \
+            -o BatchMode=yes \
+            -o ConnectTimeout=15 \
+            "$SERVER_USER@$SERVER_IP" \
+            "echo 'Conexión SSH exitosa'; whoami; pwd"
+
+      - name: Copiar index.html al servidor
+        env:
+          SERVER_IP: ${{ secrets.IP }}
+          SERVER_USER: ${{ secrets.USER }}
+        run: |
+          scp \
+            -P 22 \
+            index.html \
+            "$SERVER_USER@$SERVER_IP:/home/$SERVER_USER/index.html"
+
+      - name: Verificar archivo desplegado
+        env:
+          SERVER_IP: ${{ secrets.IP }}
+          SERVER_USER: ${{ secrets.USER }}
+        run: |
+          ssh \
+            -p 22 \
+            "$SERVER_USER@$SERVER_IP" \
+            "ls -la /home/$SERVER_USER/index.html && cat /home/$SERVER_USER/index.html"
