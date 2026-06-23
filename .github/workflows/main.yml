@@ -1,4 +1,4 @@
-name: Deploy Hola Mundo to VPS 2
+name: Deploy Hola Mundo to VPS
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
           </head>
           <body>
             <h1>Hola mundo desde GitHub Actions</h1>
-            <p>El despliegue al servidor fue exitoso.</p>
+            <p>El archivo fue desplegado correctamente en el VPS.</p>
           </body>
           </html>
           EOF
@@ -32,22 +32,17 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH }}
 
-      - name: Registrar servidor SSH
+      - name: Agregar servidor a known_hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H "${{ secrets.IP }}" >> ~/.ssh/known_hosts
 
-      - name: Crear directorio en el servidor
-        run: |
-          ssh "${{ secrets.USER }}@${{ secrets.IP }}" \
-          "mkdir -p /home/${{ secrets.USER }}/hola-mundo"
-
-      - name: Copiar archivo al servidor
+      - name: Copiar archivo al VPS
         run: |
           scp index.html \
-          "${{ secrets.USER }}@${{ secrets.IP }}:/home/${{ secrets.USER }}/hola-mundo/index.html"
+          "${{ secrets.USER }}@${{ secrets.IP }}:/home/${{ secrets.USER }}/index.html"
 
-      - name: Verificar despliegue
+      - name: Verificar archivo en el servidor
         run: |
           ssh "${{ secrets.USER }}@${{ secrets.IP }}" \
-          "ls -la /home/${{ secrets.USER }}/hola-mundo && cat /home/${{ secrets.USER }}/hola-mundo/index.html"
+          "ls -la /home/${{ secrets.USER }}/index.html && cat /home/${{ secrets.USER }}/index.html"
