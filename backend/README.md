@@ -293,6 +293,44 @@ Reglas actuales:
 - `TECHNICIAN`: puede ver sus tareas asignadas y editar/actualizar estado.
 - `CLIENT`: actualmente puede consultar tareas segun las reglas del backend existente.
 
+### Reportes
+
+La tabla `Report` ya existe en Prisma, pero los endpoints de reportes se implementaran por partes para mantener commits pequenos y faciles de revisar.
+
+Plan recomendado:
+
+```txt
+GET  /api/v1/reports
+POST /api/v1/reports/task/:taskId
+GET  /api/v1/reports/:id
+GET  /api/v1/reports/:id/download
+```
+
+Flujo esperado:
+
+```txt
+Tarea existente
+  -> Backend consulta tarea, cliente, tecnico y compania
+  -> Backend genera un PDF
+  -> Backend guarda el archivo
+  -> Backend crea un registro en Report
+  -> Frontend lista y descarga el reporte
+```
+
+Primera version:
+
+- Generar PDF basico de una tarea.
+- Guardar archivo localmente en `REPORTS_STORAGE_DIR`.
+- Crear registro en `Report` con `fileUrl` y `format = "pdf"`.
+- Permitir listar y descargar reportes.
+
+Version posterior:
+
+- Guardar PDFs en Supabase Storage.
+- Agregar evidencias/fotos.
+- Agregar firma, checklist y logo de compania.
+- Crear plantillas de reporte.
+
 ## Modelo de Datos
 
 Tablas principales:
@@ -367,6 +405,12 @@ El backend debe permitir ese origen en:
 
 ```env
 CORS_ORIGIN="http://localhost:5173,http://localhost:3000"
+```
+
+Reportes locales:
+
+```env
+REPORTS_STORAGE_DIR="uploads/reports"
 ```
 
 ## Troubleshooting
