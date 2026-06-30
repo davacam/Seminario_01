@@ -24,7 +24,7 @@ jobs:
       - name: Instalar dependencias
         run: |
           cd frontend
-          npm install
+          npm ci
 
       # 4. Generar build React
       - name: Generar build
@@ -75,7 +75,16 @@ jobs:
           ssh "$SERVER_USER@$SERVER_IP" \
             "mkdir -p /var/www/seminario1/tasksmdaw"
 
-      # 10. Copiar build React al servidor
+      # 10. Limpiar despliegue anterior
+      - name: Limpiar despliegue anterior
+        env:
+          SERVER_IP: ${{ secrets.IP }}
+          SERVER_USER: ${{ secrets.USER }}
+        run: |
+          ssh "$SERVER_USER@$SERVER_IP" \
+            "find /var/www/seminario1/tasksmdaw -mindepth 1 -delete"
+
+      # 11. Copiar build React al servidor
       - name: Copiar build al servidor
         env:
           SERVER_IP: ${{ secrets.IP }}
@@ -84,7 +93,7 @@ jobs:
           scp -r frontend/dist/* \
             "$SERVER_USER@$SERVER_IP:/var/www/seminario1/tasksmdaw/"
 
-      # 11. Verificar contenido desplegado
+      # 12. Verificar contenido desplegado
       - name: Verificar despliegue
         env:
           SERVER_IP: ${{ secrets.IP }}
