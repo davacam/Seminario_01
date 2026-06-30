@@ -152,11 +152,13 @@ backend/
     routes/
       auth.js
       clients.js
+      reports.js
       tasks.js
       users.js
     services/
       authService.js
       clientService.js
+      reportService.js
       taskService.js
       userService.js
     utils/
@@ -295,14 +297,19 @@ Reglas actuales:
 
 ### Reportes
 
-La tabla `Report` ya existe en Prisma, pero los endpoints de reportes se implementaran por partes para mantener commits pequenos y faciles de revisar.
+La tabla `Report` ya existe en Prisma y los endpoints se implementan por partes para mantener commits pequenos y faciles de revisar.
 
-Plan recomendado:
+Disponible ahora:
 
 ```txt
 GET  /api/v1/reports
-POST /api/v1/reports/task/:taskId
 GET  /api/v1/reports/:id
+```
+
+Plan recomendado para los siguientes commits:
+
+```txt
+POST /api/v1/reports/task/:taskId
 GET  /api/v1/reports/:id/download
 ```
 
@@ -322,7 +329,7 @@ Primera version:
 - Generar PDF basico de una tarea.
 - Guardar archivo localmente en `REPORTS_STORAGE_DIR`.
 - Crear registro en `Report` con `fileUrl` y `format = "pdf"`.
-- Permitir listar y descargar reportes.
+- Permitir descargar reportes.
 
 Version posterior:
 
