@@ -1,4 +1,4 @@
-name: Deploy Hola Mundo to VPS
+name: Deploy React Frontend to VPS
 
 on:
   push:
@@ -10,28 +10,41 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Crear archivo Hola Mundo
-        run: |
-          cat > index.html <<'EOF'
-          <!DOCTYPE html>
-          <html lang="es">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Hola Mundo</title>
-          </head>
-          <body>
-            <h1>Hola mundo desde GitHub Actions</h1>
-            <p>El despliegue fue realizado correctamente.</p>
-          </body>
-          </html>
-          EOF
+      # 1. Descargar el repositorio
+      - name: Check out code
+        uses: actions/checkout@v4
 
+      # 2. Configurar Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 3. Instalar dependencias
+      - name: Instalar dependencias
+        run: |
+          cd frontend
+          npm install
+
+      # 4. Generar build React
+      - name: Generar build
+        run: |
+          cd frontend
+          npm run build
+
+      # 5. Verificar que el build fue generado
+      - name: Verificar build
+        run: |
+          echo "Contenido de dist:"
+          ls -lah frontend/dist
+
+      # 6. Configurar clave SSH
       - name: Configurar clave SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH }}
 
+      # 7. Configurar known_hosts
       - name: Configurar known_hosts
         env:
           SERVER_IP: ${{ secrets.IP }}
@@ -41,6 +54,7 @@ jobs:
           ssh-keyscan -T 15 -H "$SERVER_IP" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
 
+      # 8. Verificar conexión SSH
       - name: Verificar conexión SSH
         env:
           SERVER_IP: ${{ secrets.IP }}
@@ -50,8 +64,9 @@ jobs:
             -o BatchMode=yes \
             -o ConnectTimeout=15 \
             "$SERVER_USER@$SERVER_IP" \
-            "echo 'Conexión SSH exitosa para el usuario:' && whoami"
+            "echo 'Conexión SSH exitosa para:' && whoami"
 
+      # 9. Crear directorio de despliegue
       - name: Crear directorio de despliegue
         env:
           SERVER_IP: ${{ secrets.IP }}
@@ -60,19 +75,20 @@ jobs:
           ssh "$SERVER_USER@$SERVER_IP" \
             "mkdir -p /var/www/seminario1/tasksmdaw"
 
-      - name: Copiar archivo al servidor
+      # 10. Copiar build React al servidor
+      - name: Copiar build al servidor
         env:
           SERVER_IP: ${{ secrets.IP }}
           SERVER_USER: ${{ secrets.USER }}
         run: |
-          scp index.html \
-            "$SERVER_USER@$SERVER_IP:/var/www/seminario1/tasksmdaw/index.html"
+          scp -r frontend/dist/* \
+            "$SERVER_USER@$SERVER_IP:/var/www/seminario1/tasksmdaw/"
 
+      # 11. Verificar contenido desplegado
       - name: Verificar despliegue
         env:
           SERVER_IP: ${{ secrets.IP }}
           SERVER_USER: ${{ secrets.USER }}
         run: |
           ssh "$SERVER_USER@$SERVER_IP" \
-            "ls -la /var/www/seminario1/tasksmdaw/index.html && \
-             cat /var/www/seminario1/tasksmdaw/index.html"
+            "echo 'Contenido desplegado:' && ls -lah /var/www/seminario1/tasksmdaw"
