@@ -7,7 +7,6 @@ import LoadingSpinner from "./components/common/LoadingSpinner";
 import Login from "./pages/Auth/Login";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
 import TechnicianDashboard from "./pages/Dashboard/TechnicianDashboard";
-import ClientDashboard from "./pages/Dashboard/ClientDashboard";
 import UsersList from "./pages/Users/UsersList";
 import TasksList from "./pages/Tasks/TasksList";
 import ClientsList from "./pages/Clients/ClientsList";
@@ -88,7 +87,7 @@ function Dashboard() {
     <>
       {user.role === "ADMIN" && <AdminDashboard />}
       {user.role === "TECHNICIAN" && <TechnicianDashboard />}
-      {user.role === "CLIENT" && <ClientDashboard />}
+      {user.role === "CLIENT" && <AdminDashboard />}
     </>
   );
 }

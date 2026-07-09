@@ -6,7 +6,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const taskRoutes = require("./routes/tasks");
 const clientRoutes = require("./routes/clients");
-const reportRoutes = require("./routes/reports");
+const formRoutes = require("./routes/forms");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -50,7 +50,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/tasks", taskRoutes);
 app.use("/api/v1/clients", clientRoutes);
-app.use("/api/v1/reports", reportRoutes);
+app.use("/api/v1/forms", formRoutes);
 
 // 404
 app.use((req, res) => {
