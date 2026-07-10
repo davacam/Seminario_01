@@ -1,19 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, CheckCircle2, LogIn, ShieldCheck, Sparkles } from "lucide-react";
 import useAuthStore from "../../store/authStore";
 import authService from "../../services/authService";
+import publicService from "../../services/publicService";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@techdesk.com");
-  const [password, setPassword] = useState("Admin@12345");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [summary, setSummary] = useState(null);
 
   const setUser = useAuthStore((state) => state.setUser);
   const setTokens = useAuthStore((state) => state.setTokens);
   const setAuthError = useAuthStore((state) => state.setError);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSummary = async () => {
+      try {
+        const data = await publicService.getLoginSummary();
+        if (isMounted) setSummary(data);
+      } catch (err) {
+        console.error("Error loading login summary:", err);
+      }
+    };
+
+    loadSummary();
+    const intervalId = window.setInterval(loadSummary, 15000);
+
+    return () => {
+      isMounted = false;
+      window.clearInterval(intervalId);
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,8 +64,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100">
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+    <div className="min-h-screen bg-slate-950 px-4 py-4 text-slate-100 sm:py-8">
+      <div className="mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-6xl items-center gap-6 sm:min-h-[calc(100vh-4rem)] sm:gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         <section className="page-enter hidden lg:block">
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-sm text-emerald-200">
             <ShieldCheck size={16} />
@@ -53,14 +76,14 @@ export default function Login() {
           </h1>
           <p className="mt-5 max-w-xl text-lg text-slate-400">
             Gestiona clientes, tareas, usuarios y estados desde una consola limpia,
-            lista para evolucionar hacia reportes y flujos mas avanzados.
+            lista para evolucionar hacia reportes y flujos más avanzados.
           </p>
 
           <div className="mt-10 grid max-w-2xl grid-cols-3 gap-4">
             {[
-              ["Usuarios", "24", "bg-sky-400"],
-              ["Tareas", "12", "bg-amber-400"],
-              ["Clientes", "08", "bg-emerald-400"],
+              ["Usuarios", summary?.users ?? "...", "bg-sky-400"],
+              ["Tareas", summary?.tasks ?? "...", "bg-amber-400"],
+              ["Clientes", summary?.clients ?? "...", "bg-emerald-400"],
             ].map(([label, value, color], index) => (
               <div
                 key={label}
@@ -76,14 +99,14 @@ export default function Login() {
         </section>
 
         <section className="float-in">
-          <div className="surface relative overflow-hidden rounded-lg p-8">
+          <div className="surface relative overflow-hidden rounded-lg p-5 sm:p-8">
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-sky-400 via-emerald-400 to-amber-300" />
             <div className="mb-8">
               <div className="mb-4 inline-flex rounded-lg bg-sky-400/10 p-3 text-sky-200">
                 <Sparkles size={24} />
               </div>
-              <h2 className="text-3xl font-bold text-white">TechDesk</h2>
-              <p className="mt-2 text-slate-400">Inicia sesion para entrar al demo operativo.</p>
+              <h2 className="text-2xl font-bold text-white sm:text-3xl">TechDesk</h2>
+              <p className="mt-2 text-slate-400">Inicia sesión para acceder a la plataforma.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -135,10 +158,11 @@ export default function Login() {
             <div className="mt-6 rounded-lg border border-white/10 bg-white/[0.04] p-4 text-sm text-slate-300">
               <p className="mb-3 flex items-center gap-2 font-semibold text-white">
                 <CheckCircle2 size={16} className="text-emerald-300" />
-                Credenciales demo
+                Acceso seguro
               </p>
-              <p>Admin: admin@techdesk.com / Admin@12345</p>
-              <p className="mt-1">Tecnico: tecnico@techdesk.com / Tecnico@12345</p>
+              <p className="break-words">
+                Usa las credenciales asignadas por el administrador.
+              </p>
             </div>
           </div>
         </section>
