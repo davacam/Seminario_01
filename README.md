@@ -61,7 +61,8 @@ cd backend && npm run prisma:migrate
 
 ### Technician  
 - View assigned tasks
-- Update task status
+- Create tasks, which are assigned automatically to the technician
+- Edit, delete, and update the status of assigned tasks
 - Submit forms and evidence
 - Generate field reports
 - Track work history
@@ -71,6 +72,20 @@ cd backend && npm run prisma:migrate
 - View request status
 - Download generated reports
 - Access service history
+
+### Route protection
+- All application routes require an authenticated session.
+- The `/users` and `/clients` administration modules are restricted to the `ADMIN` role in both the frontend and backend.
+- Users without access to a restricted frontend route are redirected to their dashboard.
+- Each role has its own dashboard: administrator, technician, or client.
+
+## Recent updates
+
+- Role-based frontend route protection for administration modules.
+- Client users are shown the client dashboard instead of the administrator dashboard.
+- Login no longer displays or preloads demonstration administrator credentials.
+- Technicians can create, edit, delete, and update the status of their assigned tasks.
+- Login displays live totals for users, tasks, and clients, refreshed every 15 seconds.
 
 ## 📋 Features (Current Phase)
 
