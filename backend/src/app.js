@@ -7,6 +7,7 @@ const userRoutes = require("./routes/users");
 const taskRoutes = require("./routes/tasks");
 const clientRoutes = require("./routes/clients");
 const formRoutes = require("./routes/forms");
+const publicRoutes = require("./routes/public");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -46,6 +47,7 @@ app.get("/", (req, res) => {
 });
 
 // Rutas
+app.use("/api/v1/public", publicRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/tasks", taskRoutes);
