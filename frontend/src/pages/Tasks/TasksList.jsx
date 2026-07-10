@@ -72,8 +72,9 @@ export default function TasksList() {
     handleFormClose();
   };
 
-  const canCreate = userRole === "ADMIN";
+  const canCreate = userRole === "ADMIN" || userRole === "TECHNICIAN";
   const canEdit = userRole === "ADMIN" || userRole === "TECHNICIAN";
+  const canDelete = userRole === "ADMIN" || userRole === "TECHNICIAN";
 
   const columns = [
     { key: "title", label: "Titulo" },
@@ -107,7 +108,7 @@ export default function TasksList() {
         columns={columns}
         data={tasks}
         onEdit={canEdit ? handleEdit : null}
-        onDelete={canCreate ? handleDelete : null}
+        onDelete={canDelete ? handleDelete : null}
         isLoading={isLoading}
       />
 
