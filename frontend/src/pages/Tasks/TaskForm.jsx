@@ -84,7 +84,7 @@ export default function TaskForm({ task, onSubmit, onCancel }) {
         ]}
       />
 
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <button
           type="submit"
           disabled={isLoading}

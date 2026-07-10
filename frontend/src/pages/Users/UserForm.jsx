@@ -90,7 +90,7 @@ export default function UserForm({ user, onSubmit, onCancel }) {
         required
       />
 
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <button
           type="submit"
           disabled={isLoading}
