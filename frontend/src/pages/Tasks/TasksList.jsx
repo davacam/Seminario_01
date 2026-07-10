@@ -72,7 +72,8 @@ export default function TasksList() {
     handleFormClose();
   };
 
-  const canCreate = userRole === "ADMIN" || userRole === "TECHNICIAN";
+  const isClient = userRole === "CLIENT";
+  const canCreate = userRole === "ADMIN" || userRole === "TECHNICIAN" || isClient;
   const canEdit = userRole === "ADMIN" || userRole === "TECHNICIAN";
   const canDelete = userRole === "ADMIN" || userRole === "TECHNICIAN";
 
@@ -87,8 +88,12 @@ export default function TasksList() {
     <div className="space-y-6">
       <div className="panel flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Tareas</h1>
-          <p className="mt-1 text-sm text-slate-400">Seguimiento de trabajo, prioridad y avance.</p>
+          <h1 className="text-3xl font-bold">{isClient ? "Solicitudes" : "Tareas"}</h1>
+          <p className="mt-1 text-sm text-slate-400">
+            {isClient
+              ? "Consulta el estado de las solicitudes que has enviado."
+              : "Seguimiento de trabajo, prioridad y avance."}
+          </p>
         </div>
         {canCreate && (
           <button
@@ -99,7 +104,7 @@ export default function TasksList() {
             className="btn-primary flex items-center gap-2"
           >
             <Plus size={20} />
-            Nueva Tarea
+            {isClient ? "Nueva Solicitud" : "Nueva Tarea"}
           </button>
         )}
       </div>
@@ -115,7 +120,7 @@ export default function TasksList() {
       <Modal
         isOpen={isModalOpen}
         onClose={handleFormClose}
-        title={editingTask ? "Editar Tarea" : "Nueva Tarea"}
+        title={editingTask ? "Editar Tarea" : isClient ? "Nueva Solicitud" : "Nueva Tarea"}
       >
         <TaskForm
           task={editingTask}

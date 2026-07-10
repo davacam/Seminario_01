@@ -1,8 +1,10 @@
 import { useState } from "react";
 import FormField from "../../components/forms/FormField";
 import taskService from "../../services/taskService";
+import useAuthStore from "../../store/authStore";
 
 export default function TaskForm({ task, onSubmit, onCancel }) {
+  const isClient = useAuthStore((state) => state.user?.role === "CLIENT");
   const [formData, setFormData] = useState(
     task || { title: "", description: "", priority: "MEDIUM", status: "OPEN" }
   );
@@ -55,34 +57,38 @@ export default function TaskForm({ task, onSubmit, onCancel }) {
         onChange={handleChange}
       />
 
-      <FormField
-        label="Prioridad"
-        type="select"
-        name="priority"
-        value={formData.priority}
-        onChange={handleChange}
-        options={[
-          { value: "LOW", label: "Baja" },
-          { value: "MEDIUM", label: "Media" },
-          { value: "HIGH", label: "Alta" },
-          { value: "CRITICAL", label: "Critica" },
-        ]}
-      />
+      {!isClient && (
+        <>
+          <FormField
+            label="Prioridad"
+            type="select"
+            name="priority"
+            value={formData.priority}
+            onChange={handleChange}
+            options={[
+              { value: "LOW", label: "Baja" },
+              { value: "MEDIUM", label: "Media" },
+              { value: "HIGH", label: "Alta" },
+              { value: "CRITICAL", label: "Critica" },
+            ]}
+          />
 
-      <FormField
-        label="Estado"
-        type="select"
-        name="status"
-        value={formData.status}
-        onChange={handleChange}
-        options={[
-          { value: "OPEN", label: "Abierta" },
-          { value: "IN_PROGRESS", label: "En progreso" },
-          { value: "ON_HOLD", label: "Pausada" },
-          { value: "COMPLETED", label: "Completada" },
-          { value: "CANCELLED", label: "Cancelada" },
-        ]}
-      />
+          <FormField
+            label="Estado"
+            type="select"
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+            options={[
+              { value: "OPEN", label: "Abierta" },
+              { value: "IN_PROGRESS", label: "En progreso" },
+              { value: "ON_HOLD", label: "Pausada" },
+              { value: "COMPLETED", label: "Completada" },
+              { value: "CANCELLED", label: "Cancelada" },
+            ]}
+          />
+        </>
+      )}
 
       <div className="flex flex-col gap-2 sm:flex-row">
         <button
@@ -90,7 +96,7 @@ export default function TaskForm({ task, onSubmit, onCancel }) {
           disabled={isLoading}
           className="btn-primary flex-1 disabled:opacity-50"
         >
-          {isLoading ? "Guardando..." : "Guardar"}
+          {isLoading ? "Guardando..." : isClient ? "Enviar solicitud" : "Guardar"}
         </button>
         <button
           type="button"

@@ -69,7 +69,7 @@ cd backend && npm run prisma:migrate
 
 ### Client
 - Create service requests
-- View request status
+- View the status of requests created from their own account
 - Download generated reports
 - Access service history
 
@@ -86,6 +86,7 @@ cd backend && npm run prisma:migrate
 - Login no longer displays or preloads demonstration administrator credentials.
 - Technicians can create, edit, delete, and update the status of their assigned tasks.
 - Login displays live totals for users, tasks, and clients, refreshed every 15 seconds.
+- Clients can create service requests and view the status of their own requests.
 
 ## 📋 Features (Current Phase)
 
