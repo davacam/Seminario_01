@@ -29,8 +29,8 @@ export default function Table({ columns, data, onEdit, onDelete, isLoading }) {
       <div className="h-1 overflow-hidden bg-slate-800">
         <div className="h-full w-1/3 bg-sky-400/70" style={{ animation: "pulse-line 2.6s ease-in-out infinite" }} />
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px]">
+      <div className="overflow-x-auto" role="region" aria-label="Tabla de registros" tabIndex="0">
+        <table className="w-full min-w-[640px]">
           <thead className="border-b border-white/10 bg-white/[0.04]">
             <tr>
               {columns.map((col) => (
@@ -38,7 +38,7 @@ export default function Table({ columns, data, onEdit, onDelete, isLoading }) {
                   {col.label}
                 </th>
               ))}
-              <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">Acciones</th>
+                {(onEdit || onDelete) && <th className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-400 sm:px-6">Acciones</th>}
             </tr>
           </thead>
           <tbody>
@@ -49,11 +49,11 @@ export default function Table({ columns, data, onEdit, onDelete, isLoading }) {
                 style={{ animation: `float-in 360ms ease both`, animationDelay: `${idx * 35}ms` }}
               >
                 {columns.map((col) => (
-                  <td key={col.key} className="px-6 py-4 text-sm text-slate-200">
+                  <td key={col.key} className="whitespace-nowrap px-4 py-4 text-sm text-slate-200 sm:px-6">
                     {col.render ? col.render(row[col.key], row) : row[col.key] || "-"}
                   </td>
                 ))}
-                <td className="px-6 py-4">
+                {(onEdit || onDelete) && <td className="px-4 py-4 sm:px-6">
                   <div className="flex gap-2">
                     {onEdit && (
                       <button
@@ -74,7 +74,7 @@ export default function Table({ columns, data, onEdit, onDelete, isLoading }) {
                       </button>
                     )}
                   </div>
-                </td>
+                </td>}
               </tr>
             ))}
           </tbody>
