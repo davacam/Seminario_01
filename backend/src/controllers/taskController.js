@@ -7,7 +7,7 @@ const validateCreateTask = [
   body("priority").optional().isIn(["LOW", "MEDIUM", "HIGH", "CRITICAL"]),
 ];
 
-const ensureTechnicianTaskAccess = async (req) => {
+const ensureTaskAccess = async (req) => {
   const task = await taskService.getTaskById(req.params.id, req.user.companyId);
 
   if (!task) {
@@ -16,6 +16,10 @@ const ensureTechnicianTaskAccess = async (req) => {
 
   if (req.user.role === "TECHNICIAN" && task.assignedToId !== req.user.sub) {
     throw { statusCode: 403, message: "You can only manage your assigned tasks" };
+  }
+
+  if (req.user.role === "CLIENT" && task.createdById !== req.user.sub) {
+    throw { statusCode: 403, message: "You can only view your own requests" };
   }
 
   return task;
@@ -30,6 +34,9 @@ const listTasks = async (req, res, next) => {
     if (req.query.status) filters.status = req.query.status;
     if (req.user.role === "TECHNICIAN") {
       filters.assignedToId = req.user.sub;
+    }
+    if (req.user.role === "CLIENT") {
+      filters.createdById = req.user.sub;
     }
 
     const [tasks, total] = await Promise.all([
@@ -49,7 +56,7 @@ const listTasks = async (req, res, next) => {
 
 const getTask = async (req, res, next) => {
   try {
-    const task = await ensureTechnicianTaskAccess(req);
+    const task = await ensureTaskAccess(req);
     res.json({ success: true, data: task });
   } catch (error) {
     next(error);
@@ -62,10 +69,16 @@ const createTask = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, errors: errors.array() });
     }
-    const taskData =
-      req.user.role === "TECHNICIAN"
-        ? { ...req.body, assignedToId: req.user.sub }
-        : req.body;
+    let taskData = req.body;
+    if (req.user.role === "TECHNICIAN") {
+      taskData = { ...req.body, assignedToId: req.user.sub };
+    }
+    if (req.user.role === "CLIENT") {
+      taskData = {
+        title: req.body.title,
+        description: req.body.description,
+      };
+    }
     const task = await taskService.createTask(
       req.user.companyId,
       req.user.sub,
@@ -79,7 +92,7 @@ const createTask = async (req, res, next) => {
 
 const updateTask = async (req, res, next) => {
   try {
-    await ensureTechnicianTaskAccess(req);
+    await ensureTaskAccess(req);
     const taskData =
       req.user.role === "TECHNICIAN"
         ? (({ title, description, priority, status, dueDate }) => ({
@@ -103,7 +116,7 @@ const updateTask = async (req, res, next) => {
 
 const updateTaskStatus = async (req, res, next) => {
   try {
-    await ensureTechnicianTaskAccess(req);
+    await ensureTaskAccess(req);
     const { status } = req.body;
     if (!status) {
       return res.status(400).json({ success: false, message: "Status required" });
@@ -121,7 +134,7 @@ const updateTaskStatus = async (req, res, next) => {
 
 const deleteTask = async (req, res, next) => {
   try {
-    await ensureTechnicianTaskAccess(req);
+    await ensureTaskAccess(req);
     await taskService.deleteTask(req.params.id, req.user.companyId);
     res.json({ success: true, message: "Task deleted successfully" });
   } catch (error) {

@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get("/", taskController.listTasks);
-router.post("/", authorizeRoles("ADMIN", "TECHNICIAN"), ...taskController.createTask);
+router.post("/", authorizeRoles("ADMIN", "TECHNICIAN", "CLIENT"), ...taskController.createTask);
 router.get("/:id", taskController.getTask);
 router.put("/:id", authorizeRoles("ADMIN", "TECHNICIAN"), taskController.updateTask);
 router.patch("/:id/status", authorizeRoles("ADMIN", "TECHNICIAN"), taskController.updateTaskStatus);

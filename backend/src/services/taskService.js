@@ -6,6 +6,7 @@ const getAllTasks = async (companyId, filters = {}, skip = 0, take = 50) => {
   if (filters.status) where.status = filters.status;
   if (filters.priority) where.priority = filters.priority;
   if (filters.assignedToId) where.assignedToId = filters.assignedToId;
+  if (filters.createdById) where.createdById = filters.createdById;
   if (filters.clientId) where.clientId = filters.clientId;
   if (filters.search) {
     where.OR = [
@@ -128,6 +129,7 @@ const countTasks = async (companyId, filters = {}) => {
   const where = { companyId };
   if (filters.status) where.status = filters.status;
   if (filters.assignedToId) where.assignedToId = filters.assignedToId;
+  if (filters.createdById) where.createdById = filters.createdById;
 
   return prisma.task.count({ where });
 };
