@@ -48,6 +48,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           <button
             onClick={() => setIsOpen(false)}
             className="md:hidden hover:bg-white/10 p-1 rounded"
+            aria-label="Cerrar navegación"
           >
             <X size={20} />
           </button>

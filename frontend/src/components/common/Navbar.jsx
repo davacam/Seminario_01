@@ -17,12 +17,17 @@ export default function Navbar({ toggleSidebar }) {
 
   return (
     <nav className="border-b border-white/10 bg-slate-950/70 px-4 py-3 backdrop-blur md:px-6">
-      <div className="flex items-center gap-4">
-        <button onClick={toggleSidebar} className="rounded-lg p-2 transition hover:bg-white/10">
+      <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+        <button
+          onClick={toggleSidebar}
+          className="rounded-lg p-2 transition hover:bg-white/10 md:hidden"
+          aria-label="Abrir navegación"
+        >
           <Menu size={20} />
         </button>
         <div>
-          <h1 className="text-xl font-bold text-sky-300">TechDesk</h1>
+          <h1 className="truncate text-xl font-bold text-sky-300">TechDesk</h1>
           <div className="hidden items-center gap-2 text-xs text-emerald-300 md:flex">
             <Activity size={12} />
             Demo operativo
@@ -30,11 +35,12 @@ export default function Navbar({ toggleSidebar }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex shrink-0 items-center gap-2 sm:gap-4">
         <button
           onClick={toggleTheme}
           className="rounded-lg border border-white/10 p-2 transition hover:bg-white/10"
-          title="Toggle theme"
+          title="Cambiar tema"
+          aria-label="Cambiar tema"
         >
           {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
@@ -47,10 +53,12 @@ export default function Navbar({ toggleSidebar }) {
         <button
           onClick={handleLogout}
           className="rounded-lg p-2 text-red-300 transition hover:bg-red-500/10"
-          title="Logout"
+          title="Cerrar sesión"
+          aria-label="Cerrar sesión"
         >
           <LogOut size={20} />
         </button>
+      </div>
       </div>
     </nav>
   );
