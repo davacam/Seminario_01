@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import useAuthStore from "./store/authStore";
 import useThemeStore from "./store/themeStore";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import AdminRoute from "./components/common/AdminRoute";
 import Layout from "./components/common/Layout";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 import Login from "./pages/Auth/Login";
