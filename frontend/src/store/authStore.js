@@ -10,6 +10,7 @@ const useAuthStore = create(
       refreshToken: null,
       isLoading: false,
       error: null,
+      hasHydrated: false,
 
       // Acciones
       setUser: (user) => set({ user }),
@@ -18,6 +19,7 @@ const useAuthStore = create(
       setLoading: (isLoading) => set({ isLoading }),
       setError: (error) => set({ error }),
       clearError: () => set({ error: null }),
+      setHasHydrated: (value) => set({ hasHydrated: value }),
 
       logout: () =>
         set({
@@ -26,6 +28,7 @@ const useAuthStore = create(
           refreshToken: null,
           isLoading: false,
           error: null,
+          hasHydrated: true,
         }),
 
       // Getters
@@ -41,6 +44,9 @@ const useAuthStore = create(
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

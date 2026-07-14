@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AlertCircle, CheckCircle2, LogIn, ShieldCheck, Sparkles } from "lucide-react";
 import useAuthStore from "../../store/authStore";
 import authService from "../../services/authService";
@@ -16,6 +16,7 @@ export default function Login() {
   const setUser = useAuthStore((state) => state.setUser);
   const setTokens = useAuthStore((state) => state.setTokens);
   const setAuthError = useAuthStore((state) => state.setError);
+  const location = useLocation();
 
   useEffect(() => {
     let isMounted = true;
@@ -50,7 +51,8 @@ export default function Login() {
       setUser(result.user);
       setAuthError(null);
 
-      navigate("/dashboard");
+      const redirectTo = location.state?.from?.pathname || "/dashboard";
+      navigate(redirectTo);
     } catch (err) {
       const errorMsg =
         err.response?.data?.message ||
