@@ -38,7 +38,8 @@ const useAuthStore = create(
       getRefreshToken: () => get().refreshToken,
     }),
     {
-      name: "auth-storage",
+      // Conservar la sesión JWT para restaurarla al recargar la aplicación.
+      name: "auth-storage-v3",
       partialize: (state) => ({
         user: state.user,
         accessToken: state.accessToken,

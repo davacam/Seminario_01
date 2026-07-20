@@ -2,6 +2,7 @@ import { Activity, LogOut, Moon, Sun, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
 import useThemeStore from "../../store/themeStore";
+import authService from "../../services/authService";
 
 export default function Navbar({ toggleSidebar }) {
   const navigate = useNavigate();
@@ -10,9 +11,15 @@ export default function Navbar({ toggleSidebar }) {
   const isDark = useThemeStore((state) => state.isDark);
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("Error closing session:", error);
+    } finally {
+      logout();
+      navigate("/login", { replace: true });
+    }
   };
 
   return (

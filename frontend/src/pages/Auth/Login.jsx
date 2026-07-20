@@ -54,10 +54,7 @@ export default function Login() {
       const redirectTo = location.state?.from?.pathname || "/dashboard";
       navigate(redirectTo);
     } catch (err) {
-      const errorMsg =
-        err.response?.data?.message ||
-        err.message ||
-        "Failed to login. Please try again.";
+      const errorMsg = "Credenciales inválidas. Verifica tus datos e inténtalo de nuevo.";
       setError(errorMsg);
       setAuthError(errorMsg);
     } finally {
