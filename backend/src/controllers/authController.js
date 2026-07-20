@@ -10,9 +10,9 @@ const login = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
-        errors: errors.array(),
+        message: "Invalid email or password",
       });
     }
 

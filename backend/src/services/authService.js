@@ -21,8 +21,8 @@ const login = async (email, password) => {
 
   if (user.status !== "ACTIVE") {
     throw {
-      statusCode: 403,
-      message: "User account is not active",
+      statusCode: 401,
+      message: "Invalid email or password",
     };
   }
 
